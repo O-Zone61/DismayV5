@@ -1,9 +1,7 @@
-#ifndef DISMAY_CCLIENTENTLIST
-#define DISMAY_CCLIENTENTLIST
+#ifndef CCLIENTENTITYLIST_H
+#define CCLIENTENTITYLIST_H
 
-unk(IClientNetworkable);
-unk(IClientUnknown);
-class C_BaseEntity;
+#include "Forward.h"
 
 typedef int CBaseHandle;
 
@@ -20,4 +18,4 @@ public:
 	virtual void CClientEntityList::SetMaxEntities(int) = 0;
 	virtual int CClientEntityList::GetMaxEntities(void) = 0;
 };
-#endif
+#endif // CCLIENTENTITYLIST_H

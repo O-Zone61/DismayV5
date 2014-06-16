@@ -208,15 +208,7 @@ bool DDismay::main(void)
 
 char* DDismay::GetStringRegKey(HKEY hKey, char* strValueName, char* &strDefaultValue)
 {
-    char szBuffer[512];
-    DWORD dwBufferSize = sizeof(szBuffer);
-    ULONG nError;
-    nError = RegQueryValueEx(hKey, strValueName, 0, NULL, (LPBYTE)szBuffer, &dwBufferSize);
-    if (ERROR_SUCCESS == nError)
-    {
-        return szBuffer;
-    }
-    return strDefaultValue;
+	return 0; // pls remove
 }
 
 

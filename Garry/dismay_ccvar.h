@@ -1,14 +1,9 @@
 #ifndef CCvar__
 #define CCvar__
 
-#include "../DColor.h"
+#include "Forward.h"
+#include "DColor.h"
 
-unk(ConCommandBase);
-unk(ConVar);
-unk(ConCommand);
-unk(IConsoleDisplayFunc);
-unk(ICvarQuery);
-unk(IConVar);
 
 class CCvar
 {

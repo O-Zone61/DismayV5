@@ -10,7 +10,7 @@ void CRC32_Final( CRC32_t *pulCRC );
 CRC32_t	CRC32_GetTableEntry( unsigned int slot );
 
 #include "DAngle.h"
-#include "../checksum_md5.h"
+#include "checksum_md5.h"
 
 class CUserCmd // sizeof(CUserCmd) == 0x15C
 {

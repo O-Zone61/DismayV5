@@ -1,12 +1,9 @@
 #ifndef DISMAY_CMATSYSSURF
 #define DISMAY_CMATSYSSURF
 
-#include "../DColor.h"
-#include "../DDismay.h"
-typedef unsigned char uchar;
-
-unk(ImageFormat);
-unk(InputEvent_t);
+#include "DColor.h"
+#include "DDismay.h"
+#include "Forward.h"
 
 #ifdef CreateFont
 #undef CreateFont

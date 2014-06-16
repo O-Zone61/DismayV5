@@ -1,19 +1,8 @@
 #pragma once
 #ifndef D_CCLIENT
 #define D_CCLIENT
-#include "../DDismay.h"
-
-unk(CGlobalVarsBase);
-unk(bf_write);
-unk(bf_read);
-unk(vrect_t);
-unk(CViewSetup);
-unk(ScreenFade_t);
-unk(CEngineSprite);
-unk(ClientFrameStage_t);
-unk(CSaveRestoreData);
-unk(datamap_t);
-unk(typedescription_t);
+#include "DDismay.h"
+#include "Forward.h"
 
 class CClient
 {

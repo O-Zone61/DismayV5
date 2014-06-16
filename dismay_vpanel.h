@@ -1,15 +1,7 @@
 #ifndef VPANEL__
 #define VPANEL__
 
-class IClientPanel;
-class SurfacePlat;
-class KeyValues;
-class VPanel;
-typedef unsigned long	ulong;
-typedef unsigned int	uint;
-typedef unsigned char	uchar;
-typedef unsigned long	HPanel;
-typedef unsigned int	VPANEL;
+#include "Forward.h"
 
 class VPanel
 {

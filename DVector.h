@@ -1,9 +1,8 @@
+
+#include "Forward.h"
 #ifndef VECTOR_H
 #define VECTOR_H
 #pragma once
-class DVector;
-class QAngle;
-typedef DVector Vector;
 #include "DAngle.h"
 
 extern DVector operator*(float x, DVector y);

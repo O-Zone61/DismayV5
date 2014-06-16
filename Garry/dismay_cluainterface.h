@@ -1,23 +1,14 @@
+#ifndef CLUAINTERFACE_H
+#define	CLUAINTERFACE_H
 #pragma once
-#ifndef D_CLUAINT
-#define D_CLUAINT
 
 #include "DDismay.h"
 #include "DColor.h"
+#include "dismay_misc_garry.h"
+#include "Garry/dismay_cbaseluainterface.h"
+#include "Forward.h"
+
 #include <string>
-unk(ILuaObject);
-struct lua_State;
-
-typedef int (*CLuaFunction)(lua_State*);
-
-struct UserData
-{
-    void*			data;
-    unsigned char	type;
-};
-
-
-#include "Garry\dismay_cbaseluainterface.h"
 
 class CLuaInterface : private CBaseLuaInterface {
 public:

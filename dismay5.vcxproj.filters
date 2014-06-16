@@ -51,6 +51,9 @@
     <ClCompile Include="DLua.cpp">
       <Filter>Source Files\MyClasses</Filter>
     </ClCompile>
+    <ClCompile Include="DBaseEntity.cpp">
+      <Filter>Source Files\MyClasses</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DDismay.h">
@@ -169,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="Forward.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dismay_misc_garry.h">
+      <Filter>Header Files\Garry</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

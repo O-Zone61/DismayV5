@@ -1,8 +1,8 @@
 #ifndef ENGREND__
 #define ENGREND__
 #include "DDismay.h"
+#include "Forward.h"
 #include "DColor.h"
-#include "Garry/dismay_cluainterface.h"
 
 typedef void (__stdcall DMenuCCallback)(bool bOn);
 

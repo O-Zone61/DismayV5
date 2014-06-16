@@ -1,15 +1,11 @@
-#ifndef D_CLuaShared
-#define D_CLuaShared
+#ifndef CLUASHARED_H
+#define CLUASHARED_H
 
 #include <string>
 #include <vector>
+#include "../Forward.h"
 #include "DGame.h"
-
-unk(CSteamAPIContext);
-unk(IGet);
-unk(LuaClientDatatableHook);
-
-#include "Garry/dismay_cluainterface.h"
+#include "dismay_cluainterface.h"
 
 
 class CLuaShared
@@ -32,4 +28,4 @@ public:
 	virtual void* CLuaShared::FindScripts(const std::string&, const std::string&, std::vector<std::string,std::allocator<std::string>>&) = 0;
 };
 
-#endif // D_CLuaShared
+#endif // CLUASHARED_H

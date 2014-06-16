@@ -1,11 +1,7 @@
 #ifndef CVGUI
 #define CVGUI
 
-typedef unsigned int	uint;
-typedef unsigned long	ulong;
-typedef unsigned char	uchar;
-class KeyValues;
-typedef unsigned long	HPanel;
+#include "Forward.h"
 
 class CVGui
 {

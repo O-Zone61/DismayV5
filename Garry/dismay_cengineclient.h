@@ -1,11 +1,9 @@
-#ifndef DISMAY_ENGCLIENT
-#define DISMAY_ENGCLIENT
+#ifndef CENGINECLIENT_H
+#define CENGINECLIENT_H
 
-typedef unsigned int uint;
-typedef unsigned long ulong;
 #include "DVector.h"
-#include "DDismay.h"
 #include "Forward.h"
+#include "DBaseEntity.h"
 
 
 typedef struct player_info_s
@@ -182,4 +180,4 @@ public:
 	virtual void* CEngineClient::DisconnectInternal(void) = 0;
 	virtual void* CEngineClient::IsInCommentaryMode(void) = 0;
 };
-#endif
+#endif // CENGINECLIENT_H

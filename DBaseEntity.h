@@ -1,15 +1,11 @@
 #ifndef C_BASEENTITY_H
 #define C_BASEENTITY_H
 #include "DVector.h"
-#include "DDismay.h"
 #include "Forward.h"
 
-extern DDismay* dismay;
 #define makeptr(cast, ptr, off)					((cast*)((unsigned long)ptr + (unsigned long)(off)))
 #define getmember(cast, ptr, addValue)			(*makeptr(cast, ptr, addValue))
 #define CallVirtual(type, base, index, ...)		((type)(*(unsigned long**)base)[index])(__VA_ARGS__)
-
-class IClientNetworkable;
 
 #ifdef CSS
 #define m_iAmmo				0x00
@@ -27,8 +23,8 @@ class IClientNetworkable;
 
 #define GARRYSMOD
 #ifdef GARRYSMOD
-#define CalcView			334
-#define SetViewAngles		404
+#define CALCVIEW			334
+#define SETVIEWANGLES		404
 #define m_vecMins			0x20
 #define m_vecMaxs			0x2C
 #define m_iEntIndex			0x48 // 0x4C?
@@ -66,102 +62,23 @@ class IClientNetworkable;
 class C_BaseEntity
 {
 public:
-	int		EntIndex()
-		{
-			if(!this->IsValid()) return 0;
-			return getmember(int, this, m_iEntIndex);
-		};
-	int		Health()
-		{
-			if(!this->IsValid()) return 0;
-			return getmember(int, this, m_iHealth);
-		};
-	int		GetAmmo()
-		{
-			if(!this->IsValid()) return 0;
-			return getmember(int, this, m_iAmmo);
-		};
-	int		GetTickCount()
-		{
-			if(!this->IsValid()) return 0;
-			return getmember(int, this, m_nTickBase);
-		};
-	int		GetTeam()
-		{
-			if(!this->IsValid()) return 0;
-			return getmember(int, this, m_iTeam);
-		};
-	int*	GetTickCountPtr()
-		{
-			if(!this->IsValid()) return 0;
-			return makeptr(int, this, m_nTickBase);
-		};
-	bool	IsTyping()
-		{
-			if(!this->IsValid()) return false;
-			return getmember(bool, this, m_bIsTyping);
-		};
-	bool	Alive()
-		{
-			if(!this->IsValid()) return false;
-			return getmember(bool, this, m_bLifeState);
-		};
-	bool IsPlayer()
-		{
-			if(!this->IsValid()) return false;
-			player_info_s inf;
-			int entindex;
-
-			entindex = this->EntIndex();
-
-			if(!dismay->m_pEngineClient->GetPlayerInfo(entindex, &inf))
-				return false;
-			return true;
-		};
-	unsigned char IsDormant()
-		{
-			if(!this->IsValid()) return true;
-			IClientNetworkable* a = makeptr(IClientNetworkable, this, 0x8);
-			typedef bool (__thiscall* IsDormantFn)(IClientNetworkable*); 
-
-			return CallVirtual(IsDormantFn, a, 8, a);
-		};
-	bool IsValid()
-		{
-			if(!this)
-				return false;
-			return true;
-		};
-	DVector	GetOrigin()
-		{
-			if(!this->IsValid()) return DVector(-1000, -1000, -1000);
-			return getmember(DVector, this, m_vecOrigin);
-		};
-	DVector	GetPredOrigin()
-		{
-			if(!this->IsValid()) return DVector(-1000, -1000, -1000);
-			return getmember(DVector, this, m_vecAbsOrigin);
-		};
-	DVector GetVelocity()
-		{
-			if(!this->IsValid()) return DVector(-1000, -1000, -1000);
-			return DVector(getmember(float, this, m_flVelocityX), getmember(float, this, m_flVelocityY), getmember(float, this, m_flVelocityZ));
-		};
-	C_BaseEntity* GetGroundEntity()
-		{
-			if(!this->IsValid()) return 0;
-			return getmember(C_BaseEntity*, this, m_hGroundEntity);
-		};
-	int* GetFlagPtr()
-		{
-			if(!this->IsValid()) return 0;
-			return makeptr(int, this, m_nFlags);
-		};
-	int GetFlags()
-		{
-			if(!this->IsValid()) return 0;
-			return getmember(int, this, m_nFlags);
-		};
+	inline int		EntIndex();
+	inline int		Health();
+	inline int		GetAmmo();
+	inline int		GetTickCount();
+	inline int		GetTeam();
+	inline int*		GetTickCountPtr();
+	inline bool		IsTyping();
+	inline bool		Alive();
+	inline bool		IsPlayer();
+	inline bool		IsDormant();
+	inline bool		IsValid();
+	inline DVector	GetOrigin();
+	inline DVector	GetPredOrigin();
+	inline DVector	GetVelocity();
+	inline C_BaseEntity* GetGroundEntity();
+	inline int*		GetFlagPtr();
+	inline int		GetFlags();
 };
 
 #endif // C_BASEENTITY_H

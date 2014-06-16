@@ -230,7 +230,7 @@ char* GetFileText02(const char* pszFileLoc) {
 FUNC(IsOnGround)
 {
 	IClientEntity* ent = dismay->m_pClientEntityList->GetClientEntity(dismay->m_pEngineClient->GetLocalPlayer());
-	lua_pushboolean(L, *ent->GetFlagPtr() & 1 == 1);
+	lua_pushboolean(L, (*ent->GetFlagPtr() & 1) == 1);
 	return 1;
 }
 FUNC(__tc)

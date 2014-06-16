@@ -1,7 +1,7 @@
 #ifndef DISMAY_CCLIENTTOOLS
 #define DISMAY_CCLIENTTOOLS
-#include <cdll_int.h>
-#include <cbase.h>
+
+#include "../Forward.h"
 
 #define CClientTools _CClientTools
 

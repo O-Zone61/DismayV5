@@ -1,10 +1,9 @@
 #pragma once
-#ifndef D_CBASELUAINT
-#define D_CBASELUAINT
+#ifndef CBASELUAINTERFACE_H
+#define CBASELUAINTERFACE_H
 
-#include "../DDismay.h"
-
-unk(ILuaObject);
+#include "DDismay.h"
+#include "Forward.h"
 
 class CBaseLuaInterface {
 public:

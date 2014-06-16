@@ -1,14 +1,7 @@
 #ifndef DNETCHANNEL
 #define DNETCHANNEL
 
-class	IDemoRecorder;
-class	INetMessage;
-class	INetChannelHandler;
-class	INetChannelInfo;
-typedef struct netpacket_s netpacket_t;
-typedef struct netadr_s	netadr_t;
-class bf_write;
-class bf_read;
+#include "Forward.h"
 
 
 #define FLOW_OUTGOING	0		

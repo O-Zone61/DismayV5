@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\MyClasses">
+      <UniqueIdentifier>{80d618f5-40cd-41bd-a3fc-3aaf65ad10da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MyClasses">
+      <UniqueIdentifier>{3b0bbd58-82bb-42eb-8a2e-133e149fed51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Garry">
+      <UniqueIdentifier>{16763c8f-6e5d-4517-9d53-df0bcfc9fd95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CSS">
+      <UniqueIdentifier>{0a58fd18-066e-46bd-b7e3-24f96c27cc60}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dismay_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DDismay.cpp">
+      <Filter>Source Files\MyClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="DVTable.cpp">
+      <Filter>Source Files\MyClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="DDirectX.cpp">
+      <Filter>Source Files\MyClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="DEngineRender.cpp">
+      <Filter>Source Files\MyClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Garry\dismay_csigscan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DVector.cpp">
+      <Filter>Source Files\MyClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="DLua.cpp">
+      <Filter>Source Files\MyClasses</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DDismay.h">
+      <Filter>Header Files\MyClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="DBaseEntity.h">
+      <Filter>Header Files\MyClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="DVector.h">
+      <Filter>Header Files\MyClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Garry\dismay_cbaseluainterface.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="Garry\dismay_cclient.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="Garry\dismay_ccliententitylist.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="Garry\dismay_cclienttools.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="Garry\dismay_cengineclient.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="Garry\dismay_cinput.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="Garry\dismay_clogger.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="Garry\dismay_cluainterface.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="Garry\dismay_cluashared.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="Garry\dismay_cmatsystemsurface.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="Garry\dismay_csigscan.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="Garry\dismay_ccvar.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="DColor.h">
+      <Filter>Header Files\MyClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="CSS\dismay_cclient.h">
+      <Filter>Header Files\CSS</Filter>
+    </ClInclude>
+    <ClInclude Include="CSS\dismay_ccliententitylist.h">
+      <Filter>Header Files\CSS</Filter>
+    </ClInclude>
+    <ClInclude Include="CSS\dismay_cclienttools.h">
+      <Filter>Header Files\CSS</Filter>
+    </ClInclude>
+    <ClInclude Include="CSS\dismay_ccvar.h">
+      <Filter>Header Files\CSS</Filter>
+    </ClInclude>
+    <ClInclude Include="CSS\dismay_cengineclient.h">
+      <Filter>Header Files\CSS</Filter>
+    </ClInclude>
+    <ClInclude Include="CSS\dismay_cmatsystemsurface.h">
+      <Filter>Header Files\CSS</Filter>
+    </ClInclude>
+    <ClInclude Include="DVTable.h">
+      <Filter>Header Files\MyClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Garry\dismay_cpanelwrapper.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="DGame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DFuncs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DLuaFuncs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DDirectX.h">
+      <Filter>Header Files\MyClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="DEngineRender.h">
+      <Filter>Header Files\MyClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="DAngle.h">
+      <Filter>Header Files\MyClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="checksum_md5.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="dismay_inetchannel.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="DLua.h">
+      <Filter>Header Files\MyClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="dismay_vpanel.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="dismay_cvgui.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="DCommand.h">
+      <Filter>Header Files\MyClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="CViewSetup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dismay_cprediction.h">
+      <Filter>Header Files\Garry</Filter>
+    </ClInclude>
+    <ClInclude Include="Forward.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

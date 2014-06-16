@@ -1,6 +1,7 @@
 //#define DISMAY_DEBUG
 
 #include <WinSock2.h>
+#include "DBaseEntity.h"
 #include "DDismay.h"
 #include "DFuncs.h"
 #include <string>
@@ -9,7 +10,23 @@
 #include "DGame.h"
 #include <IPHlpApi.h>
 #include "Garry/dismay_csigscan.h"
-#include "DCommand.h"
+#ifdef GARRYSMOD
+class DLua;
+#include "dismay_cvgui.h"
+#include "Garry/dismay_cengineclient.h"
+#include "Garry/dismay_cclient.h"
+#include "Garry/dismay_cluashared.h"
+#include "Garry/dismay_cmatsystemsurface.h"
+#include "Garry/dismay_cpanelwrapper.h"
+#include "Garry/dismay_cinput.h"
+#include "Garry/dismay_ccvar.h"
+#include "Garry/dismay_ccliententitylist.h"
+#endif
+#ifdef CSS
+#include "CSS/dismay_cclient.h"
+#include "CSS/dismay_cmatsystemsurface.h"
+#include "CSS/dismay_cengineclient.h"
+#endif
 
 extern DDismay* dismay;
 
@@ -37,7 +54,7 @@ DDismay::DDismay(void)
 
 	m_pClientUser		= m_pClientEngine->GetIClientUser(user, pipe, "CLIENTUSER_INTERFACE_VERSION001");
 	m_pClientFriends	= m_pClientEngine->GetIClientFriends(user, pipe, "CLIENTFRIENDS_INTERFACE_VERSION001");
-
+	MessageBox(0, "a", "a", MB_OK);
 	m_pvtNameConvar		= new DVTable((DWORD*)m_pNameConvar);
 	m_pvtSurface		= new DVTable((DWORD*)m_pSurface);
 	m_pvtEngineClient	= new DVTable((DWORD*)m_pEngineClient);
@@ -60,10 +77,7 @@ DDismay::DDismay(void)
 	m_bClientRan		= 0;
 	m_bMenuRan			= 0;
 #endif // GARRYSMOD
-	
-#ifndef NoD3D
-	m_pDX				= new DDirectX(GetActiveWindow());
-#endif // NoD3D
+
 	m_pEngineRender		= new DEngineRenderMenu();
 	
     char data[4096ul];
@@ -71,6 +85,7 @@ DDismay::DDismay(void)
     unsigned long  len = 4096ul;
     PIP_ADAPTER_INFO pinfo = (PIP_ADAPTER_INFO)data;
 	unsigned int iTotalLen;
+	MessageBox(0, "b", "b", MB_OK);
 
 	DWORD ret = GetAdaptersInfo(pinfo, &len);
 	if(ret != ERROR_SUCCESS)
@@ -89,14 +104,8 @@ DDismay::DDismay(void)
 	{
 		iTotalLen += strlen(hwProfileInfo.szHwProfileGuid);
 	}
-
-	HKEY key;
-	RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Cryptography", 0, KEY_WOW64_64KEY, &key);
-	char* t = (char*)"0";
-	char* hwid = GetStringRegKey(key, "MachineGuid", t);
-	RegCloseKey(key);
-	iTotalLen += strlen(hwid);
-
+	
+	MessageBox(0, "c", "c", MB_OK);
 	m_szHWID = new char[iTotalLen];
 	ZeroMemory(m_szHWID, iTotalLen);
 
@@ -109,7 +118,7 @@ DDismay::DDismay(void)
 			for(unsigned int i = 0; i < pinfo->AddressLength; i++)
 				sprintf(m_szHWID, "%s%02X", m_szHWID, pinfo->Address[i]);
 	sprintf(m_szHWID, "%s%s", m_szHWID, hwProfileInfo.szHwProfileGuid);
-	sprintf(m_szHWID, "%s%s", m_szHWID, hwid);
+	MessageBox(0, "d", "d", MB_OK);
 }
 
 CONSOLE_SCREEN_BUFFER_INFO csbi;

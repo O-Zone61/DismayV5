@@ -36,9 +36,6 @@
     <ClCompile Include="DVTable.cpp">
       <Filter>Source Files\MyClasses</Filter>
     </ClCompile>
-    <ClCompile Include="DDirectX.cpp">
-      <Filter>Source Files\MyClasses</Filter>
-    </ClCompile>
     <ClCompile Include="DEngineRender.cpp">
       <Filter>Source Files\MyClasses</Filter>
     </ClCompile>
@@ -136,9 +133,6 @@
     </ClInclude>
     <ClInclude Include="DLuaFuncs.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DDirectX.h">
-      <Filter>Header Files\MyClasses</Filter>
     </ClInclude>
     <ClInclude Include="DEngineRender.h">
       <Filter>Header Files\MyClasses</Filter>

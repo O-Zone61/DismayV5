@@ -1,9 +1,6 @@
 #ifndef Dismay__
 #define Dismay__
 
-#define D3D__
-#define NoD3D
-
 #define FG_BLUE		binary(1)
 #define FG_GREEN	binary(10)
 #define FG_RED		binary(100)
@@ -25,36 +22,27 @@ struct bin<0>{
 
 
 #include <Windows.h>
+#include "Forward.h"
 
-#include "DVector.h"
-#include "DGame.h"
-#include "DVTable.h"
-#include "DDirectX.h"
-#include "DEngineRender.h"
+class DEngineRender;
 
 class IClientEngine;
 class IClientFriends;
 class IClientUser;
 class CPrediction;
 class DCommand;
-
-#ifdef GARRYSMOD
-class DLua;
-#include "dismay_cvgui.h"
-#include "Garry/dismay_cengineclient.h"
-#include "Garry/dismay_cclient.h"
-#include "Garry/dismay_cluashared.h"
-#include "Garry/dismay_cmatsystemsurface.h"
-#include "Garry/dismay_cpanelwrapper.h"
-#include "Garry/dismay_cinput.h"
-#include "Garry/dismay_ccvar.h"
-#include "Garry/dismay_ccliententitylist.h"
-#endif
-#ifdef CSS
-#include "CSS/dismay_cclient.h"
-#include "CSS/dismay_cmatsystemsurface.h"
-#include "CSS/dismay_cengineclient.h"
-#endif
+class CEngineClient;
+class CClient;
+class CLuaShared;
+class CLuaInterface;
+class CMatSystemSurface;
+class CInput;
+class CCvar;
+class CClientEntityList;
+class CPanelWrapper;
+class CVGui;
+class DVTable;
+class DEngineRenderMenu;
 
 #ifdef IsValidCodePtr
 #undef IsValidCodePtr
@@ -108,10 +96,7 @@ public:
 	DVTable*			m_pvtLuaMInt;
 	DVTable*			m_pvtLuaCInt;
 #endif // GARRYSMOD
-
-#ifndef NoD3D
-	DDirectX*			m_pDX;
-#endif
+	
 	DLua*				m_pDLua;
 	DEngineRenderMenu*	m_pEngineRender;
 

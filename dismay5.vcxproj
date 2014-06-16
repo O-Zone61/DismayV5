@@ -64,7 +64,7 @@
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>STEAMWORKS_CLIENT_INTERFACES;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;DISMAY5_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GARRYSMOD;STEAMWORKS_CLIENT_INTERFACES;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;DISMAY5_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\HL-SDK\steamworks;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -73,13 +73,12 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>C:\hl-sdk\steamworks;C:\lib\public;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vstdlib.lib;tier0.lib;tier1.lib;mathlib.lib;ws2_32.lib;IPHLPAPI.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;d2d1.lib;Steam.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vstdlib.lib;tier0.lib;tier1.lib;mathlib.lib;ws2_32.lib;IPHLPAPI.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;Steam.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>/NODEFAULTLIB:"MSVCRT.lib";"LIBCMT.lib";</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DBaseEntity.cpp" />
-    <ClCompile Include="DDirectX.cpp" />
     <ClCompile Include="DDismay.cpp" />
     <ClCompile Include="DEngineRender.cpp" />
     <ClCompile Include="dismay_main.cpp" />
@@ -99,7 +98,6 @@
     <ClInclude Include="CViewSetup.h" />
     <ClInclude Include="DAngle.h" />
     <ClInclude Include="DCommand.h" />
-    <ClInclude Include="DDirectX.h" />
     <ClInclude Include="DBaseEntity.h" />
     <ClInclude Include="DColor.h" />
     <ClInclude Include="DDismay.h" />

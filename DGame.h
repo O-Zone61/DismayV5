@@ -1,5 +1,3 @@
-#define GARRYSMOD
-//#define CSS
 #ifndef unk
 #define unk(c) class c
 #endif

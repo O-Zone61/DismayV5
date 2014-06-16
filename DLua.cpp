@@ -1,11 +1,15 @@
+#include "DBaseEntity.h"
 #include "DLua.h"
 #include <fstream>
 #include "Garry/dismay_cinput.h"
+#include "Garry/dismay_cengineclient.h"
+#include "Garry/dismay_ccliententitylist.h"
 #include "DBaseEntity.h"
+#include "DDismay.h"
 
 #define FUNC(name) int name(lua_State* L)
 
-__forceinline Color GetColor(lua_State* L, int stack)
+inline Color GetColor(lua_State* L, int stack)
 {
 	lua_pushvalue(L, stack);
 	lua_getfield(L, -1, "r");
@@ -208,6 +212,20 @@ FUNC(RemoveFlags)
 	*ent->GetFlagPtr() &= ~(int)lua_tonumber(L, 1);
 	return 0;
 }
+FUNC(player__GetAll)
+{
+	lua_newtable(L);
+	for(int i = 1; i <= dismay->m_pEngineClient->GetMaxClients();i++)
+	{
+		if(dismay->m_pClientEntityList->GetClientEntity(i)->IsPlayer())
+		{
+			PushEntity(L, dismay->m_pClientEntityList->GetClientEntity(i));
+			lua_rawseti(L, -2, i);
+		}
+		else break;
+	}
+	return 1;
+}
 
 char* GetFileText02(const char* pszFileLoc) {
 	std::ifstream input;
@@ -356,6 +374,10 @@ DLua::DLua()
 	lua_setfield(L, -2, "Vector");
 	lua_pop(L, 1);
 
+	lua_getfield(L, LUA_GLOBALSINDEX, "player");
+	lua_pushcfunction(L, player__GetAll);
+	lua_setfield(L, -2, "GetAll");
+	lua_pop(L, 1);
 
 	lua_pushcfunction(L, Error);
 	lua_pushvalue(L, LUA_GLOBALSINDEX);

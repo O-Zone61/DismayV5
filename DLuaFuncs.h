@@ -7,6 +7,15 @@
 #include "dismay_inetchannel.h"
 #include "dismay_vpanel.h"
 #include "CSteamID.h"
+#include <string>
+#include "Garry/dismay_cbaseluainterface.h"
+#include "Garry/dismay_cluainterface.h"
+#include "Garry/dismay_cluashared.h"
+#include "Garry/dismay_cengineclient.h"
+#include "Garry/dismay_cpanelwrapper.h"
+#include "Garry/dismay_ccliententitylist.h"
+#include "DEngineRender.h"
+#include "DVTable.h"
 
 
 #define DEG2RAD(x) ((float)x / 57.2957795f)

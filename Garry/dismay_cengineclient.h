@@ -3,7 +3,6 @@
 
 #include "DVector.h"
 #include "Forward.h"
-#include "DBaseEntity.h"
 
 
 typedef struct player_info_s

@@ -1,5 +1,7 @@
 #include "DDismay.h"
 #include "DEngineRender.h"
+#include "Garry/dismay_cmatsystemsurface.h"
+#include "Garry/dismay_cengineclient.h"
 
 #define VK_IS_PRESSED		0x01
 #define VK_WAS_PRESSED		0x02

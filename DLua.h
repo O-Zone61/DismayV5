@@ -2,8 +2,8 @@
 #define DLUA_H
 class DLua;
 
-#define TYPE_CUSERCMD		 20
-
+#define TYPE_CUSERCMD		20
+#define TYPE_ENTITY			21
 
 #define LUA_SUCCESS		0
 #define LUA_YIELD		1
@@ -12,10 +12,15 @@ class DLua;
 #define LUA_ERRMEM		4
 #define LUA_ERRERR		5
 
-#define SPECIAL_GLOB	-10002
-
+#include "Forward.h"
 #include "DDismay.h"
+#include "Garry/dismay_cinput.h"
 #include <Windows.h>
+#include <string>
+#include "DVector.h"
+#include "Garry/dismay_cluainterface.h"
+#include "Garry/dismay_cluashared.h"
+#include "Garry/dismay_cbaseluainterface.h"
 extern DDismay* dismay;
 
 typedef int (__cdecl* CFunc)(lua_State* L);
@@ -62,44 +67,44 @@ typedef int lua_Integer;
 #define LUA_TTHREAD             8
 #define LUA_MULTRET     (-1)
 
-static auto lua_tolstring = ((const char* (*)(lua_State*, int, int))(GetLuaFunc("lua_tolstring")));
-static auto luaL_loadbuffer = ((int(*)(lua_State* L, const char* buf, size_t len, const char* chunkname))(GetLuaFunc("luaL_loadbuffer")));
-static auto luaL_newstate = ((lua_State* (*)(void))(GetLuaFunc("luaL_newstate")));
-static auto luaL_openlibs = ((void(*)(lua_State*))(GetLuaFunc("luaL_openlibs")));
-static auto luaL_loadstring = ((int(*)(lua_State*, const char*))(GetLuaFunc("luaL_loadstring")));
-static auto lua_pcall = ((int(*)(lua_State*, int, int, int))(GetLuaFunc("lua_pcall")));
-static auto lua_settop = ((void(*)(lua_State* L, int stack))(GetLuaFunc("lua_settop")));
-static auto lua_getfield = ((void(*)(lua_State* L, int stack, const char* name))(GetLuaFunc("lua_getfield")));
-static auto lua_setfield = ((void(*)(lua_State* L, int stack, const char* name))(GetLuaFunc("lua_setfield")));
-static auto lua_pushvalue = ((void(*)(lua_State* L, int))(GetLuaFunc("lua_pushvalue")));
-static auto lua_pushcclosure = ((void(*)(lua_State* L, lua_CFunction func, int null))(GetLuaFunc("lua_pushcclosure")));
-static auto lua_tonumber = ((double(*)(lua_State* L, int stack))(GetLuaFunc("lua_tonumber")));
-static auto lua_touserdata = (void* (*)(lua_State* L, int stack))GetLuaFunc("lua_touserdata");
+static auto lua_tolstring		= ((const char* (*)(lua_State*, int, int))(GetLuaFunc("lua_tolstring")));
+static auto luaL_loadbuffer		= ((int(*)(lua_State* L, const char* buf, size_t len, const char* chunkname))(GetLuaFunc("luaL_loadbuffer")));
+static auto luaL_newstate		= ((lua_State* (*)(void))(GetLuaFunc("luaL_newstate")));
+static auto luaL_openlibs		= ((void(*)(lua_State*))(GetLuaFunc("luaL_openlibs")));
+static auto luaL_loadstring		= ((int(*)(lua_State*, const char*))(GetLuaFunc("luaL_loadstring")));
+static auto lua_pcall			= ((int(*)(lua_State*, int, int, int))(GetLuaFunc("lua_pcall")));
+static auto lua_settop			= ((void(*)(lua_State* L, int stack))(GetLuaFunc("lua_settop")));
+static auto lua_getfield		= ((void(*)(lua_State* L, int stack, const char* name))(GetLuaFunc("lua_getfield")));
+static auto lua_setfield		= ((void(*)(lua_State* L, int stack, const char* name))(GetLuaFunc("lua_setfield")));
+static auto lua_pushvalue		= ((void(*)(lua_State* L, int))(GetLuaFunc("lua_pushvalue")));
+static auto lua_pushcclosure	= ((void(*)(lua_State* L, lua_CFunction func, int null))(GetLuaFunc("lua_pushcclosure")));
+static auto lua_tonumber		= ((double(*)(lua_State* L, int stack))(GetLuaFunc("lua_tonumber")));
+static auto lua_touserdata		= (void* (*)(lua_State* L, int stack))GetLuaFunc("lua_touserdata");
 
-static auto lua_pushnumber = (void(*)(lua_State *L, lua_Number n))GetLuaFunc("lua_pushnumber");
-static auto lua_gettop = (int(*)(lua_State *L))GetLuaFunc("lua_gettop");
-static auto lua_type = (int(*) (lua_State *L, int index))GetLuaFunc("lua_type");
-static auto lua_tointeger = (lua_Integer(*) (lua_State *L, int index))GetLuaFunc("lua_tointeger");
-static auto lua_pushlstring = (void(*) (lua_State *L, const char *s, size_t len))GetLuaFunc("lua_pushlstring");
+static auto lua_pushnumber		= (void(*)(lua_State *L, lua_Number n))GetLuaFunc("lua_pushnumber");
+static auto lua_gettop			= (int(*)(lua_State *L))GetLuaFunc("lua_gettop");
+static auto lua_type			= (int(*) (lua_State *L, int index))GetLuaFunc("lua_type");
+static auto lua_tointeger		= (lua_Integer(*) (lua_State *L, int index))GetLuaFunc("lua_tointeger");
+static auto lua_pushlstring		= (void(*) (lua_State *L, const char *s, size_t len))GetLuaFunc("lua_pushlstring");
 //static auto lua_rawgeti = (HEADER)GetLuaFunc("lua_rawgeti");
-static auto luaL_error = (int(*) (lua_State *L, const char *fmt, ...))GetLuaFunc("luaL_error");
-static auto lua_call = (void(*) (lua_State *L, int nargs, int nresults))GetLuaFunc("lua_call");
-static auto lua_createtable = (void(*) (lua_State *L, int narr, int nrec))GetLuaFunc("lua_createtable");
-static auto lua_pushstring = (void(*) (lua_State *L, const char *s))GetLuaFunc("lua_pushstring");
-static auto lua_pushinteger = (void(*)		(lua_State *L, int n))GetLuaFunc("lua_pushinteger");
-static auto lua_pushboolean = (void(*)(lua_State *L, bool b))GetLuaFunc("lua_pushboolean");
-static auto lua_toboolean = (bool(*) (lua_State *L, int index))GetLuaFunc("lua_toboolean");
-static auto lua_pushnil = (void(*) (lua_State* L))GetLuaFunc("lua_pushnil");
-static auto lua_getinfo = (int (*)(lua_State *L, const char *what, lua_Debug *ar))GetLuaFunc("lua_getinfo");
-static auto lua_atpanic = (lua_CFunction(*)(lua_State *L, lua_CFunction panicf))GetLuaFunc("lua_atpanic");
-static auto lua_close = (lua_State*(*)(lua_State *L))GetLuaFunc("lua_close");
-static auto lua_typename = (const char *(*)  (lua_State *L, int tp))GetLuaFunc("lua_typename");
-static auto	lua_getstack = (int(*)(lua_State *L, int level, lua_Debug *ar))GetLuaFunc("lua_getstack");
-static auto luaL_newmetatable = (int (*)(lua_State *L, const char *tname))GetLuaFunc("luaL_newmetatable");
-static auto luaL_checkudata = (void* (*) (lua_State *L, int index, const char *tname))GetLuaFunc("luaL_checkudata");
-static auto lua_newuserdata	= (void* (*)(lua_State* L, size_t size))GetLuaFunc("lua_newuserdata");
-static auto lua_setmetatable = (int (*)(lua_State *L, int index))GetLuaFunc("lua_setmetatable");
-
+static auto luaL_error			= (int(*) (lua_State *L, const char *fmt, ...))GetLuaFunc("luaL_error");
+static auto lua_call			= (void(*) (lua_State *L, int nargs, int nresults))GetLuaFunc("lua_call");
+static auto lua_createtable		= (void(*) (lua_State *L, int narr, int nrec))GetLuaFunc("lua_createtable");
+static auto lua_pushstring		= (void(*) (lua_State *L, const char *s))GetLuaFunc("lua_pushstring");
+static auto lua_pushinteger		= (void(*)		(lua_State *L, int n))GetLuaFunc("lua_pushinteger");
+static auto lua_pushboolean		= (void(*)(lua_State *L, bool b))GetLuaFunc("lua_pushboolean");
+static auto lua_toboolean		= (bool(*) (lua_State *L, int index))GetLuaFunc("lua_toboolean");
+static auto lua_pushnil			= (void(*) (lua_State* L))GetLuaFunc("lua_pushnil");
+static auto lua_getinfo			= (int (*)(lua_State *L, const char *what, lua_Debug *ar))GetLuaFunc("lua_getinfo");
+static auto lua_atpanic			= (lua_CFunction(*)(lua_State *L, lua_CFunction panicf))GetLuaFunc("lua_atpanic");
+static auto lua_close			= (lua_State*(*)(lua_State *L))GetLuaFunc("lua_close");
+static auto lua_typename		= (const char *(*)  (lua_State *L, int tp))GetLuaFunc("lua_typename");
+static auto	lua_getstack		= (int(*)(lua_State *L, int level, lua_Debug *ar))GetLuaFunc("lua_getstack");
+static auto luaL_newmetatable	= (int (*)(lua_State *L, const char *tname))GetLuaFunc("luaL_newmetatable");
+static auto luaL_checkudata		= (void* (*) (lua_State *L, int index, const char *tname))GetLuaFunc("luaL_checkudata");
+static auto lua_newuserdata		= (void* (*)(lua_State* L, size_t size))GetLuaFunc("lua_newuserdata");
+static auto lua_setmetatable	= (int (*)(lua_State *L, int index))GetLuaFunc("lua_setmetatable");
+static auto lua_rawseti			= (void (*)(lua_State *L, int index, int n))GetLuaFunc("lua_rawseti");
 #define lua_pop(L,n)            lua_settop(L, -(n)-1)
 #define lua_newtable(L)         lua_createtable(L, 0, 0)
 #define lua_pushcfunction(L,f)  lua_pushcclosure(L, (f), 0)
@@ -183,6 +188,24 @@ static QAngle GetAngle(lua_State* L, int stack = -1)
 	float r = (float)lua_tonumber(L, -1);
 	lua_pop(L, 1);
 	return QAngle(p, y, r);
+}
+
+static bool PushEntity(lua_State* L, C_BaseEntity* ent)
+{
+	UserData* ud = (UserData*)lua_newuserdata(L, sizeof(UserData));
+	ud->data = ent;
+	ud->type = TYPE_ENTITY;
+	lua_getfield(L, LUA_REGISTRYINDEX, "Entity");
+	lua_setmetatable(L, -2);
+	return true;
+}
+
+static C_BaseEntity* GetEntity(lua_State* L, int stack = -1)
+{
+	UserData* ud = (UserData*)lua_touserdata(L, stack);
+	if(ud->type == TYPE_ENTITY)
+		return (C_BaseEntity*)ud->data;
+	return 0;
 }
 
 static bool PushCUserCmd(lua_State* L, CUserCmd* cmd)

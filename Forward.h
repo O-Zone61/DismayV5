@@ -1,6 +1,3 @@
-#ifndef FORWARD_H
-#define FORWARD_H
-
 class	IClientRenderable;
 class	IClientNetworkable;
 class	IClientUnknown;
@@ -85,5 +82,4 @@ typedef unsigned int	uint;
 typedef unsigned char	uchar;
 typedef unsigned long	HPanel;
 typedef unsigned int	VPANEL;
-
-#endif // FORWARD_H
+typedef unsigned long	CRC32_t;

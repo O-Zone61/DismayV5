@@ -4,6 +4,7 @@
 
 #include "DDismay.h"
 #include "Forward.h"
+#include "dismay_misc_garry.h"
 
 class CBaseLuaInterface {
 public:

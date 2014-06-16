@@ -2,7 +2,6 @@
 #define	CLUAINTERFACE_H
 #pragma once
 
-#include "DDismay.h"
 #include "DColor.h"
 #include "dismay_misc_garry.h"
 #include "Garry/dismay_cbaseluainterface.h"

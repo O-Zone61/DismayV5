@@ -5,12 +5,6 @@
 #pragma once
 #include "DAngle.h"
 
-extern DVector operator*(float x, DVector y);
-extern DVector operator*(DVector y, float x);
-void AngleVectors(const QAngle &angles, Vector *forward);
-extern void VectorAngles(const Vector &forward, QAngle &angles);
-extern void AngleVectors(const QAngle &angles, Vector *forward, Vector *right, Vector *up);
-
 class DVector 
 {
 public:
@@ -37,5 +31,14 @@ public:
 public:
 	float x, y, z;
 };
+
+typedef DVector Vector;
+
+extern DVector operator*(float x, DVector y);
+extern DVector operator*(DVector y, float x);
+void AngleVectors(const QAngle &angles, Vector *forward);
+extern void VectorAngles(const Vector &forward, QAngle &angles);
+extern void AngleVectors(const QAngle &angles, Vector *forward, Vector *right, Vector *up);
+
 
 #endif // VECTOR_H

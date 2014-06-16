@@ -1,7 +1,9 @@
+
+#include "Forward.h"
 #ifndef C_BASEENTITY_H
 #define C_BASEENTITY_H
+#include "DDismay.h"
 #include "DVector.h"
-#include "Forward.h"
 
 #define makeptr(cast, ptr, off)					((cast*)((unsigned long)ptr + (unsigned long)(off)))
 #define getmember(cast, ptr, addValue)			(*makeptr(cast, ptr, addValue))
@@ -21,7 +23,6 @@
 #define m_vecPredictedWorld	0x334
 #endif
 
-#define GARRYSMOD
 #ifdef GARRYSMOD
 #define CALCVIEW			334
 #define SETVIEWANGLES		404
@@ -58,6 +59,7 @@
 #define m_nTickBase			0x20A4
 #define m_hGroundEntity		0x240
 #endif // GARRYSMOD
+extern bool IsPlayer(C_BaseEntity*);
 
 class C_BaseEntity
 {
@@ -65,20 +67,46 @@ public:
 	inline int		EntIndex();
 	inline int		Health();
 	inline int		GetAmmo();
-	inline int		GetTickCount();
+	inline int		GetTickCount()
+		{
+			if(!this->IsValid()) return 0;
+			return getmember(int, this, m_nTickBase);
+		};
 	inline int		GetTeam();
-	inline int*		GetTickCountPtr();
+	inline int*		GetTickCountPtr()
+		{
+			if(!this->IsValid()) return 0;
+			return makeptr(int, this, m_nTickBase);
+		};
 	inline bool		IsTyping();
 	inline bool		Alive();
-	inline bool		IsPlayer();
-	inline bool		IsDormant();
-	inline bool		IsValid();
+	inline bool		IsPlayer()
+		{
+			return ::IsPlayer(this);
+		};
+	inline bool		IsDormant()
+		{
+			if(!this->IsValid()) return true;
+			IClientNetworkable* a = makeptr(IClientNetworkable, this, 0x8);
+			typedef bool (__thiscall* IsDormantFn)(IClientNetworkable*); 
+
+			return CallVirtual(IsDormantFn, a, 8, a);
+		};
+	inline bool		IsValid()
+		{
+			return this != 0;
+		};
 	inline DVector	GetOrigin();
 	inline DVector	GetPredOrigin();
 	inline DVector	GetVelocity();
 	inline C_BaseEntity* GetGroundEntity();
-	inline int*		GetFlagPtr();
+	inline int*		GetFlagPtr()
+		{
+			if(!this->IsValid()) return 0;
+			return makeptr(int, this, m_nFlags);
+		};
 	inline int		GetFlags();
 };
+
 
 #endif // C_BASEENTITY_H

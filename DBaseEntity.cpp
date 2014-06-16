@@ -1,5 +1,6 @@
-#include "Garry/dismay_ccliententitylist.h"
 #include "DBaseEntity.h"
+#include "Garry/dismay_ccliententitylist.h"
+#include "Garry/dismay_cengineclient.h"
 #include "DDismay.h"
 #include "DVector.h"
 
@@ -20,20 +21,10 @@ int C_BaseEntity::GetAmmo()
 	if(!this->IsValid()) return 0;
 	return getmember(int, this, m_iAmmo);
 };
-int C_BaseEntity::GetTickCount()
-{
-	if(!this->IsValid()) return 0;
-	return getmember(int, this, m_nTickBase);
-};
 int C_BaseEntity::GetTeam()
 {
 	if(!this->IsValid()) return 0;
 	return getmember(int, this, m_iTeam);
-};
-int* C_BaseEntity::GetTickCountPtr()
-{
-	if(!this->IsValid()) return 0;
-	return makeptr(int, this, m_nTickBase);
 };
 bool C_BaseEntity::IsTyping()
 {
@@ -45,29 +36,17 @@ bool C_BaseEntity::Alive()
 	if(!this->IsValid()) return false;
 	return getmember(bool, this, m_bLifeState);
 };
-bool C_BaseEntity::IsPlayer()
+bool IsPlayer(C_BaseEntity* a)
 {
-	if(!this->IsValid()) return false;
+	if(!a->IsValid()) return false;
 	player_info_s inf;
 	int entindex;
 
-	entindex = this->EntIndex();
+	entindex = a->EntIndex();
 
 	if(!dismay->m_pEngineClient->GetPlayerInfo(entindex, &inf))
 		return false;
 	return true;
-};
-bool C_BaseEntity::IsDormant()
-{
-	if(!this->IsValid()) return true;
-	IClientNetworkable* a = makeptr(IClientNetworkable, this, 0x8);
-	typedef bool (__thiscall* IsDormantFn)(IClientNetworkable*); 
-
-	return CallVirtual(IsDormantFn, a, 8, a);
-};
-bool C_BaseEntity::IsValid()
-{
-	return this != 0;
 };
 DVector C_BaseEntity::GetOrigin()
 {
@@ -88,11 +67,6 @@ C_BaseEntity* C_BaseEntity::GetGroundEntity()
 {
 	if(!this->IsValid()) return 0;
 	return getmember(C_BaseEntity*, this, m_hGroundEntity);
-};
-int* C_BaseEntity::GetFlagPtr()
-{
-	if(!this->IsValid()) return 0;
-	return makeptr(int, this, m_nFlags);
 };
 int C_BaseEntity::GetFlags()
 {

@@ -54,7 +54,7 @@ DDismay::DDismay(void)
 
 	m_pClientUser		= m_pClientEngine->GetIClientUser(user, pipe, "CLIENTUSER_INTERFACE_VERSION001");
 	m_pClientFriends	= m_pClientEngine->GetIClientFriends(user, pipe, "CLIENTFRIENDS_INTERFACE_VERSION001");
-	MessageBox(0, "a", "a", MB_OK);
+
 	m_pvtNameConvar		= new DVTable((DWORD*)m_pNameConvar);
 	m_pvtSurface		= new DVTable((DWORD*)m_pSurface);
 	m_pvtEngineClient	= new DVTable((DWORD*)m_pEngineClient);
@@ -85,7 +85,6 @@ DDismay::DDismay(void)
     unsigned long  len = 4096ul;
     PIP_ADAPTER_INFO pinfo = (PIP_ADAPTER_INFO)data;
 	unsigned int iTotalLen;
-	MessageBox(0, "b", "b", MB_OK);
 
 	DWORD ret = GetAdaptersInfo(pinfo, &len);
 	if(ret != ERROR_SUCCESS)
@@ -105,7 +104,6 @@ DDismay::DDismay(void)
 		iTotalLen += strlen(hwProfileInfo.szHwProfileGuid);
 	}
 	
-	MessageBox(0, "c", "c", MB_OK);
 	m_szHWID = new char[iTotalLen];
 	ZeroMemory(m_szHWID, iTotalLen);
 
@@ -118,7 +116,6 @@ DDismay::DDismay(void)
 			for(unsigned int i = 0; i < pinfo->AddressLength; i++)
 				sprintf(m_szHWID, "%s%02X", m_szHWID, pinfo->Address[i]);
 	sprintf(m_szHWID, "%s%s", m_szHWID, hwProfileInfo.szHwProfileGuid);
-	MessageBox(0, "d", "d", MB_OK);
 }
 
 CONSOLE_SCREEN_BUFFER_INFO csbi;

@@ -99,6 +99,12 @@ bool LoadClient(CLuaInterface* pThis)
 	typedef void* (__thiscall* RunStringFn)(CLuaInterface*, const char*, const char*, const char*, bool, bool);
 
 	if(!pThis) return 0;
+	lua_getfield(dismay->m_pDLua->m_luaState, LUA_GLOBALSINDEX, "NoClient");
+	if(lua_toboolean(dismay->m_pDLua->m_luaState, -1))
+	{
+		lua_pop(dismay->m_pDLua->m_luaState, 1);
+		return 0;
+	}
 
 	SETGINT(pThis,		DISMAY_VERSION,		"rversion"			);
 

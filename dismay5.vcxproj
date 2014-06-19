@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{101EF5B3-DCA4-45D7-A97F-2B0AFD8D8240}</ProjectGuid>
+    <ProjectGuid>{DFA46594-10AC-425C-BC48-91736610DF69}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>dismay5</RootNamespace>
   </PropertyGroup>
@@ -31,7 +31,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Alex|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -84,7 +84,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>GARRYSMOD;STEAMWORKS_CLIENT_INTERFACES;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;DISMAY5_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\HL-SDK\steamworks;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;C:\HL\Open Steamworks;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\HL-SDK\steamworks;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;C:\HL\Open Steamworks;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

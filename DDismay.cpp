@@ -27,6 +27,9 @@ class DLua;
 #include "CSS/dismay_cmatsystemsurface.h"
 #include "CSS/dismay_cengineclient.h"
 #endif
+#ifdef LoadMenu
+#undef LoadMenu
+#endif
 
 extern DDismay* dismay;
 
@@ -156,6 +159,8 @@ void put__(PVOID address, int bytes, byte ch){
 
 bool DDismay::main(void)
 {
+	//lua_State* L = dismay->m_pLua->GetLuaInterface(2)->L;
+	//LoadMenu(dismay->m_pLua->GetLuaInterface(2));
 	typedef void* (__fastcall PaintTraverseFn)(CPanelWrapper* pThis, void* _ECX, uint panel, bool a3, bool a4);
 	m_pvtPanel->Hook(PAINTTRAVERSE, (PaintTraverseFn*)&PaintTraverse);
 	m_pvtPanel->ReplaceWithNew();

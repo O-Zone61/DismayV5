@@ -160,7 +160,8 @@ bool LoadClient(CLuaInterface* pThis)
 	else {
 		error = error || lua_pcall(L, 0, 0, -2);
 	}
-	delete[] code;
+	if(strcmp(code, ""))
+		delete[] code;
 
 	lua_pop(L, 1);
 	return 1;	
@@ -231,7 +232,9 @@ bool LoadMenu(CLuaInterface* pThis)
 	else {
 		error = error || lua_pcall(L, 0, 0, -2);
 	}
-	delete[] code;
+	lua_pop(L, 1);
+	if(strcmp(code, ""))
+		delete[] code;
 	return 1;
 }
 

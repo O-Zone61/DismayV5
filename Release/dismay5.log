@@ -1,12 +1,12 @@
-﻿Build started 6/19/2014 12:38:48 PM.
+﻿Build started 6/19/2014 2:15:01 PM.
      1>Project "C:\Projects\dismay5\dismay5\dismay5.vcxproj" on node 2 (build target(s)).
+       Project file contains ToolsVersion="12.0". This toolset may be unknown or missing, in which case you may be able to resolve this by installing the appropriate version of MSBuild, or the build may have been forced to a particular ToolsVersion for policy reasons. Treating the project as if it had ToolsVersion="4.0". For more information, please see http://go.microsoft.com/fwlink/?LinkId=291333.
      1>InitializeBuildStatus:
-         Creating "Release\dismay5.unsuccessfulbuild" because "AlwaysCreate" was specified.
+         Touching "Release\dismay5.unsuccessfulbuild".
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"C:\HL-SDK\steamworks" /I"C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include" /Zi /nologo /W3 /WX- /Ox /Oi /Oy- /GL /D GARRYSMOD /D STEAMWORKS_CLIENT_INTERFACES /D _CRT_SECURE_NO_WARNINGS /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D DISMAY5_EXPORTS /D _WINDLL /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt DDismay.cpp
-         DDismay.cpp
+         All outputs are up-to-date.
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Projects\dismay5\Release\dismay5.dll" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\hl-sdk\steamworks" /LIBPATH:C:\lib\public /LIBPATH:"C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib" vstdlib.lib tier0.lib tier1.lib mathlib.lib ws2_32.lib IPHLPAPI.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Steam.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /NODEFAULTLIB:"/NODEFAULTLIB:\"MSVCRT.lib\"" /NODEFAULTLIB:LIBCMT.lib /MANIFEST /ManifestFile:"Release\dismay5.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Projects\dismay5\Release\dismay5.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Projects\dismay5\Release\dismay5.lib" /MACHINE:X86 /DLL Release\DBaseEntity.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Projects\dismay5\Release\dismay5.dll" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\hl-sdk\steamworks" /LIBPATH:C:\lib\public /LIBPATH:"C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib" /LIBPATH:"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Lib" /LIBPATH:C:\HL\sdk\gmod\2009_alliedmods\lib\public vstdlib.lib tier0.lib tier1.lib mathlib.lib ws2_32.lib IPHLPAPI.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Steam.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /NODEFAULTLIB:"/NODEFAULTLIB:\"MSVCRT.lib\"" /NODEFAULTLIB:LIBCMT.lib /MANIFEST /ManifestFile:"Release\dismay5.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Projects\dismay5\Release\dismay5.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Projects\dismay5\Release\dismay5.lib" /MACHINE:X86 /DLL Release\DBaseEntity.obj
          Release\DDismay.obj
          Release\DEngineRender.obj
          Release\dismay_main.obj
@@ -26,4 +26,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.99
+Time Elapsed 00:00:01.19

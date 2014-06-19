@@ -106,32 +106,63 @@ bool LoadClient(CLuaInterface* pThis)
 		return 0;
 	}
 
-	SETGINT(pThis,		DISMAY_VERSION,		"rversion"			);
+	lua_State* L = pThis->L;
+	lua_pushnumber(L, DISMAY_VERSION);
+	lua_setglobal(L, "rversion");
 
-	SETGFN(	pThis,		SetCommandNumber,	"SetCommandNumber"	);
-	SETGFN(	pThis,		SetCmdSendState,	"SetCmdSendState"	);
-	SETGFN(	pThis,		GetCmdSendState,	"GetCmdSendState"	);
-	SETGFN(	pThis,		GetCmdRepState,		"GetCmdRepState"	);
-	SETGFN(	pThis,		SetCmdRepState,		"SetCmdRepState"	);
-	SETGFN(	pThis,		LoadWebScriptClient,"LoadWebScript"		);
-	SETGFN(	pThis,		GetTickCount,		"GetTickCount"		);
-	SETGFN(	pThis,		SetTickCount,		"SetTickCount"		);
-	SETGFN(	pThis,		SetSteamName,		"SetSteamName"		);
-	SETGFN(	pThis,		RequestFile,		"RequestFile"		);
-	SETGFN(	pThis,		OpenClient,			"OpenClient"		);
-	SETGFN(	pThis,		GetPred,			"PredSpread"		);
-	SETGFN(	pThis,		IsDormant,			"IsDormant"			);
-	SETGFN(	pThis,		RunClient,			"RunClient"			);
-	SETGFN( pThis,		OpenMenu,			"OpenMenu"			);
-	SETGFN(	pThis,		RunMenu,			"RunMenu"			);
-	SETGFN(	pThis,		Repaint,			"Repaint"			);
-	SETGFN(	pThis,		SetIGN,				"SetIGN"			);
-	SETGFN(	pThis,		_tc,				"_tc"				);
+	lua_register(L, "SetCommandNumber", SetCommandNumber);
+	lua_register(L, "SetCmdSendState", SetCmdSendState);
+	lua_register(L, "GetCmdSendState", GetCmdSendState);
+	lua_register(L, "GetCmdRepState", GetCmdRepState);
+	lua_register(L, "SetCmdRepState", SetCmdRepState);
+	lua_register(L, "LoadWebScript", LoadWebScriptClient);
+	lua_register(L, "GetTickCount", GetTickCount);
+	lua_register(L, "SetTickCount", SetTickCount);
+	lua_register(L, "SetSteamName", SetSteamName);
+	lua_register(L, "RequestFile", RequestFile);
+	lua_register(L, "OpenClient", OpenClient);
+	lua_register(L, "PredSpread", GetPred);
+	lua_register(L, "IsDormant", IsDormant);
+	lua_register(L, "RunClient", RunClient);
+	lua_register(L, "OpenMenu", OpenMenu);
+	lua_register(L, "RunMenu", RunMenu);
+	lua_register(L, "Repaint", Repaint);
+	lua_register(L, "SetIGN", SetIGN);
+	lua_register(L, "_tc", _tc);
+
 	dismay->m_bClientRan = 1;
 	char* client = dismay->FetchFileFromWeb(0);
-	((RunStringFn)dismay->m_pvtLuaCInt->GetOld(RUNSTRING))(pThis, "", "", client, true, true);
+
+	lua_pushcfunction(L, Error);
+	int error = luaL_loadbuffer(L, client, strlen(client), "=");
+	if (error) {
+		dismay->SetConColor(BG_RED | BG_INTENSE);
+		printf("[COMPILE ERROR] %s\n", lua_tostring(L, -1));
+		dismay->ResetConColor();
+		lua_pop(L, 1);
+	}
+	else {
+		error = error || lua_pcall(L, 0, 0, -2);
+	}
+	
+
+	//((RunStringFn)dismay->m_pvtLuaCInt->GetOld(RUNSTRING))(pThis, "", "", client, true, true);
 	delete[] client;
-	((RunStringFn)dismay->m_pvtLuaMInt->GetOld(RUNSTRING))(pThis, "\x01", "\x01", GetFileText("C:\\dismay\\dismay.lua"), true, true);
+	//((RunStringFn)dismay->m_pvtLuaMInt->GetOld(RUNSTRING))(pThis, "\x01", "\x01", GetFileText("C:\\dismay\\dismay.lua"), true, true);
+	const char* code = GetFileText("C:\\dismay\\dismay.lua");
+	error = luaL_loadbuffer(L, code, strlen(code), "=\x01");
+	if (error) {
+		dismay->SetConColor(BG_RED | BG_INTENSE);
+		printf("[COMPILE ERROR] %s\n", lua_tostring(L, -1));
+		dismay->ResetConColor();
+		lua_pop(L, 1);
+	}
+	else {
+		error = error || lua_pcall(L, 0, 0, -2);
+	}
+	delete[] code;
+
+	lua_pop(L, 1);
 	return 1;	
 }
 
@@ -142,38 +173,65 @@ bool LoadMenu(CLuaInterface* pThis)
 	if(!pThis) return 0;
 	dismay->m_bMenuRan = 1;
 
-	SETGINT(pThis,		DISMAY_VERSION,		"rversion"			);
-	SETGFN(	pThis,		Labort,				"abort"				);
-	SETGFN(	pThis,		CreateMenuItem,		"CreateMenuItem"	);
-	SETGFN(	pThis,		RemoveMenuItem,		"RemoveMenuItem"	);
-	SETGFN(	pThis,		SetItemActive,		"SetItemActive"		);
-	SETGFN(	pThis,		SetItemCallback,	"SetItemCallback"	);
-	SETGFN(	pThis,		LoadWebScriptMenu,	"LoadWebScript"		);
-	SETGFN(	pThis,		SetSteamName,		"SetSteamName"		);
-	SETGFN(	pThis,		SetItemName,		"SetItemName"		);
-	SETGFN(	pThis,		OpenClient,			"OpenClient"		);
-	SETGFN(	pThis,		RunDismay,			"RunDismay"			);
-	SETGFN(	pThis,		RunClient,			"RunClient"			);
-	SETGFN(	pThis,		OpenMenu,			"OpenMenu"			);
-	SETGFN(	pThis,		RunMenu,			"RunMenu"			);
-	SETGFN(	pThis,		SetIGN,				"SetIGN"			);
-	SETGFN(	pThis,		Paint,				"Paint"				);
+	lua_State* L = pThis->L;
+	lua_pushnumber(L, DISMAY_VERSION);
+	lua_setglobal(L, "rversion");
 
-	//steamworks
-	
-	SETGFN(	pThis,		SendMsg,			"SendMsg"			);
-	SETGFN(	pThis,		GetFriendCount,		"GetFriendCount"	);
-	SETGFN(	pThis,		GetFriendName,		"GetFriendName"		);
-	SETGFN(	pThis,		InviteFriendToRoom,	"InviteFriendToRoom");
-	SETGFN(	pThis,		GetRoomName,		"GetRoomName"		);
-	SETGFN(	pThis,		GetRoomCount,		"GetRoomCount"		);
-	SETGFN(	pThis,		CreateRoom,		"CreateRoom"		);
+
+	lua_register(L, "abort", Labort);
+	lua_register(L, "CreateMenuItem", CreateMenuItem);
+	lua_register(L, "RemoveMenuItem", RemoveMenuItem);
+	lua_register(L, "SetItemActive", SetItemActive);
+	lua_register(L, "SetItemCallback", SetItemCallback);
+	lua_register(L, "LoadWebScript", LoadWebScriptMenu);
+	lua_register(L, "SetSteamName", SetSteamName);
+	lua_register(L, "SetItemName", SetItemName);
+	lua_register(L, "OpenClient", OpenClient);
+	lua_register(L, "RunDismay", RunDismay);
+	lua_register(L, "RunClient", RunClient);
+	lua_register(L, "OpenMenu", OpenMenu);
+	lua_register(L, "RunMenu", RunMenu);
+	lua_register(L, "SetIGN", SetIGN);
+	lua_register(L, "Paint", Paint);
+	lua_register(L, "SendMsg", SendMsg);
+	lua_register(L, "GetFriendCount", GetFriendCount);
+	lua_register(L, "GetFriendName", GetFriendName);
+	lua_register(L, "InviteFriendToRoom", InviteFriendToRoom);
+	lua_register(L, "GetRoomName", GetRoomName);
+	lua_register(L, "GetRoomCount", GetRoomCount);
+	lua_register(L, "CreateRoom", CreateRoom);
+
 
 	char* menu = dismay->FetchFileFromWeb(2);
-	((RunStringFn)dismay->m_pvtLuaMInt->GetOld(RUNSTRING))(pThis, "", "", menu, true, true);
-	delete[] menu;
 
-	((RunStringFn)dismay->m_pvtLuaMInt->GetOld(RUNSTRING))(pThis, "\x01", "\x01", GetFileText("C:\\dismay\\dismay_menu.lua"), true, true);
+	lua_pushcfunction(L, Error);
+	int error = luaL_loadbuffer(L, menu, strlen(menu), "=");
+	if (error) {
+		dismay->SetConColor(BG_RED | BG_INTENSE);
+		printf("[COMPILE ERROR] %s\n", lua_tostring(L, -1));
+		dismay->ResetConColor();
+		lua_pop(L, 1);
+	}
+	else {
+		error = error || lua_pcall(L, 0, 0, -2);
+	}
+
+
+	//((RunStringFn)dismay->m_pvtLuaMInt->GetOld(RUNSTRING))(pThis, "", "", menu, true, true);
+	delete[] menu;
+	//((RunStringFn)dismay->m_pvtLuaMInt->GetOld(RUNSTRING))(pThis, "\x01", "\x01", GetFileText("C:\\dismay\\dismay_menu.lua"), true, true);
+	const char* code = GetFileText("C:\\dismay\\dismay_menu.lua");
+	error = luaL_loadbuffer(L, code, strlen(code), "=\x01");
+	if (error) {
+		dismay->SetConColor(BG_RED | BG_INTENSE);
+		printf("[COMPILE ERROR] %s\n", lua_tostring(L, -1));
+		dismay->ResetConColor();
+		lua_pop(L, 1);
+	}
+	else {
+		error = error || lua_pcall(L, 0, 0, -2);
+	}
+	delete[] code;
 	return 1;
 }
 

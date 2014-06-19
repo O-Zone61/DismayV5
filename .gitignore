@@ -184,3 +184,10 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+
+Release/
+Alex/
+Debug/
+dismay5.vcxproj
+dismay5.vcxproj.filters
+dismay5.vcxproj.user

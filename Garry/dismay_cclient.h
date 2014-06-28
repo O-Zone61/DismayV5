@@ -3,6 +3,7 @@
 #define D_CCLIENT
 #include "DDismay.h"
 #include "Forward.h"
+class ClientClass;
 
 class CClient
 {
@@ -15,7 +16,7 @@ public://0
 	virtual void* CClient::LevelInitPreEntity(char  const*) = 0;
 	virtual void* CClient::LevelInitPostEntity(void) = 0;
 	virtual void* CClient::LevelShutdown(void) = 0;
-	virtual void* CClient::GetAllClasses(void) = 0;
+	virtual ClientClass* CClient::GetAllClasses(void) = 0;
 	virtual void* CClient::HudVidInit(void) = 0;//10
 	virtual void* CClient::HudProcessInput(bool) = 0;
 	virtual void CClient::HudUpdate(bool) = 0;

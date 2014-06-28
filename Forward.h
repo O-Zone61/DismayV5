@@ -5,6 +5,8 @@ class	IClientUnknown;
 #ifndef C_BASEENTITY_H
 class C_BaseEntity;
 typedef C_BaseEntity IClientEntity;
+class C_BaseCollideable;
+typedef C_BaseCollideable ICollideable;
 #endif
 #ifndef ANGLE_H
 class QAngle;

@@ -26,6 +26,7 @@ struct bin<0>{
 
 class DEngineRender;
 
+class CDebugOverlay;
 class IClientEngine;
 class IClientFriends;
 class IClientUser;
@@ -49,6 +50,13 @@ class DEngineRenderMenu;
 #endif // IsValidCodePtr
 #define IsValidCodePtr(x) (!IsBadCodePtr((FARPROC)x))
 
+template<typename fn>
+inline fn GetFunc(void* clas, int ind)
+{
+	DWORD* vtbl = *(DWORD**)clas;
+	return (fn)(vtbl[ind]);
+}
+
 class DDismay
 {
 public:
@@ -64,8 +72,21 @@ public:
 	char* DecryptWebFile(char* &encrypted, char* key, int nTotalLength);
 	char* GetStringRegKey(HKEY hKey, char* strValueName, char* &strDefaultValue);
 
+	bool DrawColoredText(ulong,int,int,int,int,int,int,char  const*);
+	bool DrawLine(int x1, int y1, int x2, int y2);
+	bool SetDrawColor(int r, int g, int b, int a = 255);
+	void DrawRect(int x1, int y1, int x2, int y2);
+
+	bool WorldToScreen(Vector& world, Vector& screen);
+	bool UnhookWindows();
+	bool HookWindows();
+
 	template <class _interface>
 	_interface GetInterface(const char* module_name, const char* interface_name);
+	bool ScreenTransform(const Vector& point, Vector& screen);
+	bool WorldToScreen(const Vector &origin, Vector &screen);
+
+public:
 
 	CEngineClient*		m_pEngineClient;
 	CClient*			m_pClient;
@@ -76,12 +97,11 @@ public:
 	CClientEntityList*	m_pClientEntityList;
 	CVGui*				m_pVGui;
 	CPrediction*		m_pPrediction;
-#ifdef GARRYSMOD
 	CLuaShared*			m_pLua;
-#endif // GARRYSMOD
 	IClientEngine*		m_pClientEngine;
 	IClientUser*		m_pClientUser;
 	IClientFriends*		m_pClientFriends;
+	CDebugOverlay*		m_pDebug;
 	ConVar*				m_pNameConvar;
 
 	DVTable*			m_pvtEngineClient;
@@ -91,16 +111,25 @@ public:
 	DVTable*			m_pvtInput;
 	DVTable*			m_pvtNameConvar;
 	DVTable*			m_pvtPrediction;
-#ifdef GARRYSMOD
 	DVTable*			m_pvtLua;
 	DVTable*			m_pvtLuaMInt;
 	DVTable*			m_pvtLuaCInt;
-#endif // GARRYSMOD
 	
 	DLua*				m_pDLua;
 	DEngineRenderMenu*	m_pEngineRender;
 
-	CRC32_t				m_crcCurrent;
+	int					m_nGetAppID;
+	int					m_nIsInGame;
+	int					m_nGetViewAngles;
+	int					m_nSetViewAngles;
+	int					m_nPaintTraverse;
+	int					m_nDrawLine;
+	int					m_nSetDrawColor;
+	int					m_nScreenPosition;
+	int					m_nCUserCmdSize;
+	int					m_nDrawFilledRect;
+
+	int					m_nAppID;
 	uint				m_pDraw;
 	char*				m_szHWID;
 	char*				m_szName;
@@ -110,17 +139,10 @@ public:
 	unsigned char		m_bShowMenu;
 	bool				m_bSendCmds;
 	bool				m_bRepCmds;
-#ifdef GARRYSMOD
 	bool				m_bStealFiles;
 	bool				m_bMenuRan;
 	bool				m_bClientRan;
-#endif // GARRYSMOD
 };
 
-
-#ifdef GARRYSMOD
 #include "DLua.h"
-#endif // GARRYSMOD
-
-
 #endif // Dismay__

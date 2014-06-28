@@ -2,40 +2,62 @@
 #include "Garry/dismay_ccliententitylist.h"
 #include "Garry/dismay_cengineclient.h"
 #include "DDismay.h"
+#include "ClientClass.h"
 #include "DVector.h"
+#include "Garry/dismay_cclient.h"
 
 extern DDismay* dismay;
 
-int C_BaseEntity::EntIndex()
+RecvProp* GetRecvProp(const char* var)
 {
-	if(!this->IsValid()) return 0;
-	return getmember(int, this, m_iEntIndex);
-};
-int C_BaseEntity::Health()
+	ClientClass* clas = dismay->m_pClient->GetAllClasses();
+	while(clas && clas->m_pNext)
+	{
+		RecvTable* recv = clas->GetTable();
+		int cur = 0;
+		while(cur < recv->m_nProps)
+		{
+			if(!strcmp(var, recv->GetRProp(cur)->GetName()))
+				return recv->GetRProp(cur);
+			cur++;
+		}
+		clas = clas->m_pNext;
+	}
+	return 0;
+}
+
+int GetOffset(const char* var)
 {
-	if(!this->IsValid()) return 0;
-	return getmember(int, this, m_iHealth);
-};
-int C_BaseEntity::GetAmmo()
+	ClientClass* clas = dismay->m_pClient->GetAllClasses();
+	while(clas && clas->m_pNext)
+	{
+		RecvTable* recv = clas->GetTable();
+		int cur = 0;
+		while(cur < recv->m_nProps)
+		{
+			if(!strcmp(var, recv->GetRProp(cur)->GetName()))
+				return recv->GetRProp(cur)->GetOffset();
+			cur++;
+		}
+		clas = clas->m_pNext;
+	}
+	return 0;
+}
+const char* GetNick(C_BaseEntity* a)
 {
-	if(!this->IsValid()) return 0;
-	return getmember(int, this, m_iAmmo);
-};
-int C_BaseEntity::GetTeam()
-{
-	if(!this->IsValid()) return 0;
-	return getmember(int, this, m_iTeam);
-};
-bool C_BaseEntity::IsTyping()
-{
-	if(!this->IsValid()) return false;
-	return getmember(bool, this, m_bIsTyping);
-};
-bool C_BaseEntity::Alive()
-{
-	if(!this->IsValid()) return false;
-	return getmember(bool, this, m_bLifeState);
-};
+	
+	if(!a->IsValid()) return "(null)";
+	player_info_s inf;
+	int entindex;
+
+	entindex = a->EntIndex();
+
+	dismay->m_pEngineClient->GetPlayerInfo(entindex, &inf);
+	if(!strcmp(inf.name, ""))
+		return "unnamed";
+	return inf.name;
+}
+
 bool IsPlayer(C_BaseEntity* a)
 {
 	if(!a->IsValid()) return false;
@@ -44,32 +66,7 @@ bool IsPlayer(C_BaseEntity* a)
 
 	entindex = a->EntIndex();
 
-	if(!dismay->m_pEngineClient->GetPlayerInfo(entindex, &inf))
+	if(dismay->m_pEngineClient->GetPlayerInfo(entindex, &inf))
 		return false;
 	return true;
-};
-DVector C_BaseEntity::GetOrigin()
-{
-	if(!this->IsValid()) return DVector(-1000, -1000, -1000);
-	return getmember(DVector, this, m_vecOrigin);
-};
-DVector C_BaseEntity::GetPredOrigin()
-{
-	if(!this->IsValid()) return DVector(-1000, -1000, -1000);
-	return getmember(DVector, this, m_vecAbsOrigin);
-};
-DVector C_BaseEntity::GetVelocity()
-{
-	if(!this->IsValid()) return DVector(-1000, -1000, -1000);
-	return DVector(getmember(float, this, m_flVelocityX), getmember(float, this, m_flVelocityY), getmember(float, this, m_flVelocityZ));
-};
-C_BaseEntity* C_BaseEntity::GetGroundEntity()
-{
-	if(!this->IsValid()) return 0;
-	return getmember(C_BaseEntity*, this, m_hGroundEntity);
-};
-int C_BaseEntity::GetFlags()
-{
-	if(!this->IsValid()) return 0;
-	return getmember(int, this, m_nFlags);
 };

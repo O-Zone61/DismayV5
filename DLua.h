@@ -10,7 +10,6 @@ class DLua;
 #define LUA_ERRRUN		2
 #define LUA_ERRSYNTAX	3
 #define LUA_ERRMEM		4
-#define LUA_ERRERR		5
 
 #include "Forward.h"
 #include "DDismay.h"
@@ -21,7 +20,24 @@ class DLua;
 #include "Garry/dismay_cluainterface.h"
 #include "Garry/dismay_cluashared.h"
 #include "Garry/dismay_cbaseluainterface.h"
+#include "lua.hpp"
 extern DDismay* dismay;
+
+typedef int(*lua_CFunction) (lua_State *L);
+typedef double lua_Number;
+typedef int lua_Integer;
+#define LUA_TNONE               (-1)
+#define LUA_TNIL                0
+#define LUA_TBOOLEAN            1
+#define LUA_TLIGHTUSERDATA      2
+#define LUA_TNUMBER             3
+#define LUA_TSTRING             4
+#define LUA_TTABLE              5
+#define LUA_TFUNCTION           6
+#define LUA_TUSERDATA           7
+#define LUA_TTHREAD             8
+#define LUA_MULTRET     (-1)
+/*
 
 typedef int (__cdecl* CFunc)(lua_State* L);
 __forceinline void* GetLuaFunc(const char* functoget)
@@ -37,35 +53,17 @@ __forceinline void* GetLuaFunc(const char* functoget)
 }
 typedef struct lua_Debug {
   int _event;
-  const char *name;           /* (n) */
-  const char *namewhat;       /* (n) */
-  const char *what;           /* (S) */
-  const char *source;         /* (S) */
-  int currentline;            /* (l) */
-  int nups;                   /* (u) number of upvalues */
-  int linedefined;            /* (S) */
-  int lastlinedefined;        /* (S) */
-  char short_src[60];		  /* (S) */
+  const char *name;        
+  const char *namewhat;  
+  const char *what;       
+  const char *source;      
+  int currentline;        
+  int nups;               
+  int linedefined;          
+  int lastlinedefined;      
+  char short_src[60];		
   int i_ci;
 } lua_Debug;
-#define LUA_REGISTRYINDEX       (-10000)
-#define LUA_ENVIRONINDEX        (-10001)
-#define LUA_GLOBALSINDEX        (-10002)
-#define lua_upvalueindex(i)     (LUA_GLOBALSINDEX-(i))
-typedef int(*lua_CFunction) (lua_State *L);
-typedef double lua_Number;
-typedef int lua_Integer;
-#define LUA_TNONE               (-1)
-#define LUA_TNIL                0
-#define LUA_TBOOLEAN            1
-#define LUA_TLIGHTUSERDATA      2
-#define LUA_TNUMBER             3
-#define LUA_TSTRING             4
-#define LUA_TTABLE              5
-#define LUA_TFUNCTION           6
-#define LUA_TUSERDATA           7
-#define LUA_TTHREAD             8
-#define LUA_MULTRET     (-1)
 
 static auto lua_tolstring		= ((const char* (*)(lua_State*, int, int))(GetLuaFunc("lua_tolstring")));
 static auto luaL_loadbuffer		= ((int(*)(lua_State* L, const char* buf, size_t len, const char* chunkname))(GetLuaFunc("luaL_loadbuffer")));
@@ -123,6 +121,7 @@ static auto lua_rawseti			= (void (*)(lua_State *L, int index, int n))GetLuaFunc
 #define lua_getglobal(L,s)   lua_getfield(L, LUA_GLOBALSINDEX, s)
 #define lua_register(L,n,f) (lua_pushcfunction(L, (f)), lua_setglobal(L, (n)))
 
+*/
 static lua_State* RunLuaOn(int state, const char* l, int rets = 0)
 {
 	int id = state;
@@ -144,7 +143,7 @@ static lua_State* RunLuaOn(int state, const char* l, int rets = 0)
 
 static bool PushVector(lua_State* L, Vector vec)
 {
-	lua_getfield(L, LUA_GLOBALSINDEX, "Angle");
+	lua_getglobal(L, "Vector");
 	lua_pushnumber(L, (double)vec.x);
 	lua_pushnumber(L, (double)vec.y);
 	lua_pushnumber(L, (double)vec.z);
@@ -168,7 +167,7 @@ static Vector GetVector(lua_State* L, int stack = -1)
 
 static bool PushAngle(lua_State* L, QAngle ang)
 {
-	lua_getfield(L, LUA_GLOBALSINDEX, "Angle");
+	lua_getglobal(L, "Angle");
 	lua_pushnumber(L, (double)ang.p);
 	lua_pushnumber(L, (double)ang.y);
 	lua_pushnumber(L, (double)ang.r);
@@ -354,7 +353,7 @@ public:
 	void RunString(const char* string)
 	{
 		lua_pushcfunction(m_luaState, Error);
-		int code = luaL_loadbuffer(m_luaState, string, strlen(string), "=hack");
+		int code = luaL_loadbuffer(m_luaState, string, strlen(string), "=startup");
 		if(code)
 		{
 			const char* str = lua_tostring(m_luaState, -1);
@@ -367,8 +366,7 @@ public:
 		code = lua_pcall(m_luaState, 0, 0, -2);
 		if(code != LUA_SUCCESS) 
 		{
-			lua_pop(m_luaState, 2);
-			return;
+			lua_pop(m_luaState, 1);
 		}
 		lua_pop(m_luaState, 1);
 	}

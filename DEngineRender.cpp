@@ -1,16 +1,16 @@
 #include "DDismay.h"
 #include "DEngineRender.h"
 #include "Garry/dismay_cmatsystemsurface.h"
+#include "Garry/dismay_cluainterface.h"
 #include "Garry/dismay_cengineclient.h"
+#include <Windows.h>
 
 #define VK_IS_PRESSED		0x01
 #define VK_WAS_PRESSED		0x02
 
-#define FONT_HEIGHT 16
+#define FONT_HEIGHT 14
 
 extern DDismay* dismay;
-
-#ifdef GARRYSMOD
 void __stdcall GModLua(bool bOn)
 {
 	CLuaInterface* lUa = dismay->m_pLua->GetLuaInterface(2);
@@ -26,7 +26,6 @@ void __stdcall StealFiles(bool bOn)
 {
 	dismay->m_bStealFiles = bOn;
 }
-#endif // GARRYSMOD
 
 unsigned char UpdateKey(unsigned char vk, unsigned char& update)
 {
@@ -46,10 +45,11 @@ DEngineRenderMenu::DEngineRenderMenu()
 	m_bInitialized = 0;
 	m_pFirst		= new DMenuItem("Dismay", (DMenuCCallback*)0);
 	m_pCurrent		= m_pFirst;
-#ifdef GARRYSMOD
-	RegisterItem(new DMenuItem("Run/Open Lua", GModLua));
-	RegisterItem(new DMenuItem("Steal Files", StealFiles));
-#endif // GARRYSMOD
+	if(dismay->m_nAppID == 4000)
+	{
+		RegisterItem(new DMenuItem("Run/Open Lua", GModLua));
+		RegisterItem(new DMenuItem("Steal Files", StealFiles));
+	}
 }
 
 void DEngineRenderMenu::Initialize(void)
@@ -116,15 +116,16 @@ void DEngineRenderMenu::Render(unsigned int panel)
 }
 */
 
+#define _tc(x) MessageBox(0, x, x, 0)
+
+bool wasdown = false;
 
 void DEngineRenderMenu::Render(unsigned int panel)
 {
 	if(dismay->m_bShowMenu != 0x02)
-		if(GetAsyncKeyState(VK_INSERT))
-			dismay->m_bShowMenu = 0x01;
-		else
-			dismay->m_bShowMenu = 0x00;
-	
+		if(GetAsyncKeyState(VK_INSERT) && !wasdown)
+			dismay->m_bShowMenu = !dismay->m_bShowMenu;
+	wasdown = GetAsyncKeyState(VK_INSERT) ? true : false;
 
 	UpdateKey(VK_UP, m_bUp);
 	UpdateKey(VK_DOWN, m_bDown);
@@ -134,7 +135,7 @@ void DEngineRenderMenu::Render(unsigned int panel)
 		Initialize();
 	if(!dismay->m_bShowMenu)
 		return;
-
+	
 	if(m_bUp & VK_WAS_PRESSED)
 	{
 		if(m_pCurrent->m_pPrev)
@@ -156,6 +157,7 @@ void DEngineRenderMenu::Render(unsigned int panel)
 	int w, h;
 	dismay->m_pEngineClient->GetScreenSize(w, h);
 
+
 	int dw			= 128;
 	int perh		= 20;
 	int outline		= 1;
@@ -167,34 +169,36 @@ void DEngineRenderMenu::Render(unsigned int panel)
 
 	int seq = 0;
 
-	if(m_pFirst)
-		for(DMenuItem* i = m_pFirst;i;i = i->m_pNext)
+	DMenuItem* i = m_pFirst;
+	while(i)
+	{
+		Color t = m_colBkgr;
+		Color text = m_colText;
+		if(i->m_bActive)
 		{
-			Color t = m_colBkgr;
-			Color text = m_colText;
-			if(i->m_bActive)
-			{
-				t = m_colActive;
-				text = m_colActText;
-			}
-			if(m_pCurrent == i)
-				t = Color(m_colBkgrActive);
-			int rx = sx;
-			int ry = sy + (perh - 1) * seq;
-			int ex = rx + dw;
-			int ey = ry + perh;
-			surf->DrawSetColor(t);
-			surf->DrawFilledRect(rx, ry, ex, ey);
-
-			wchar_t  nm[128];
-			swprintf(nm, 128, L"%hs", i->m_szName);
-			int w, h;
-			surf->GetTextSize(m_fFont, nm, w, h);
-
-			surf->DrawColoredText(m_fFont, rx  + dw / 2 - w / 2, ry + perh / 2 - h / 2, text.r(), text.g(), text.b(), text.a(), "%s", i->m_szName);
-
-			seq++;
+			t = m_colActive;
+			text = m_colActText;
 		}
+		if(m_pCurrent == i)
+			t = Color(m_colBkgrActive);
+		int rx = sx;
+		int ry = sy + (perh - 1) * seq;
+		int ex = rx + dw;
+		int ey = ry + perh;
+		dismay->SetDrawColor(t.r(), t.g(), t.b(), t.a());
+		dismay->DrawRect(rx, ry, ex, ey);
+
+		wchar_t  nm[128];
+		swprintf(nm, 128, L"%hs", i->m_szName);
+		int w, h;
+		surf->GetTextSize(m_fFont, nm, w, h);
+		
+		dismay->DrawColoredText(m_fFont, rx  + dw / 2 - w / 2, ry + perh / 2 - h / 2, text.r(), text.g(), text.b(), text.a(), i->m_szName);
+		if(!i->m_pNext)
+			break;
+		i = i->m_pNext;
+		seq++;
+	}
 }
 
 

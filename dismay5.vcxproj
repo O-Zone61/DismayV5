@@ -91,8 +91,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\hl-sdk\steamworks;C:\lib\public;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Lib;C:\HL\sdk\gmod\2009_alliedmods\lib\public</AdditionalLibraryDirectories>
-      <AdditionalDependencies>vstdlib.lib;tier0.lib;tier1.lib;mathlib.lib;ws2_32.lib;IPHLPAPI.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;Steam.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\HL-SDK\lua-5.2.1-lib;C:\hl-sdk\steamworks;C:\lib\public;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Lib;C:\HL\sdk\gmod\2009_alliedmods\lib\public</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua52.lib;vstdlib.lib;tier0.lib;tier1.lib;mathlib.lib;ws2_32.lib;IPHLPAPI.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;Steam.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>/NODEFAULTLIB:"MSVCRT.lib";"LIBCMT.lib";</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -129,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="checksum_md5.h" />
+    <ClInclude Include="ClientClass.h" />
     <ClInclude Include="CSS\dismay_cclient.h" />
     <ClInclude Include="CSS\dismay_ccliententitylist.h" />
     <ClInclude Include="CSS\dismay_cclienttools.h" />
@@ -167,6 +168,11 @@
     <ClInclude Include="Garry\dismay_cmatsystemsurface.h" />
     <ClInclude Include="Garry\dismay_cpanelwrapper.h" />
     <ClInclude Include="Garry\dismay_csigscan.h" />
+    <ClInclude Include="lauxlib.h" />
+    <ClInclude Include="lua.h" />
+    <ClInclude Include="lua.hpp" />
+    <ClInclude Include="luaconf.h" />
+    <ClInclude Include="lualib.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

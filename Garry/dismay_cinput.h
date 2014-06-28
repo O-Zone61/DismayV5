@@ -11,8 +11,11 @@ CRC32_t	CRC32_GetTableEntry( unsigned int slot );
 
 #include "DAngle.h"
 #include "checksum_md5.h"
+#include "../DDismay.h"
+extern DDismay* dismay;
 
 class CUserCmd // sizeof(CUserCmd) == 0x15C
+	//gmod
 {
 public:
 	int		header;				// 4	(+x00)
@@ -60,7 +63,8 @@ public:
 		CRC32_ProcessBuffer(&crc, t + 13, 4);
 		CRC32_ProcessBuffer(&crc, t + 14, 2);
 		CRC32_ProcessBuffer(&crc, (void*)((DWORD)this + 0x3A), 2);
-		CRC32_ProcessBuffer(&crc, (void*)((DWORD)this + 0x59), 1);
+		if(dismay->m_nAppID == 4000)
+			CRC32_ProcessBuffer(&crc, (void*)((DWORD)this + 0x59), 1);
 		CRC32_Final(&crc);
 
 		return crc;
@@ -73,7 +77,7 @@ public:
 
 	__forceinline void operator=(CUserCmd* toset)
 	{
-		memcpy(toset, this, sizeof(CUserCmd));
+		memcpy(toset, this, dismay->m_nCUserCmdSize);
 	}
 };
 
@@ -81,7 +85,10 @@ class CVerifiedUserCmd
 {
 public:
 	CUserCmd m_cmd;
-	CRC32_t m_crc;
+	CRC32_t* m_crc()
+	{
+		return (CRC32_t*)((DWORD)this + dismay->m_nCUserCmdSize);
+	}
 };
 
 
@@ -138,25 +145,25 @@ public:
     virtual void* CInput::MouseWheeled(int) = 0;
     virtual void* CInput::CAM_CapYaw(float) = 0;
     virtual void* CInput::AdjustYaw(float,QAngle &) = 0;
-	__forceinline CUserCmd* HGetUserCmd(int seq)
+	inline CUserCmd* HGetUserCmd(int seq)
 	{
 		CUserCmd* cmds = (CUserCmd*)(((DWORD*)this)[49]);
-		DWORD cmd = ((DWORD)cmds +  seq % 90 * sizeof(CUserCmd));
+		DWORD cmd = (DWORD)cmds +  seq % 90 * dismay->m_nCUserCmdSize;
 		return (CUserCmd*)cmd;
 	}
-	__forceinline CVerifiedUserCmd* HGetVUserCmd(int seq)
+	inline CVerifiedUserCmd* HGetVUserCmd(int seq)
 	{
 		CVerifiedUserCmd* cmds = (CVerifiedUserCmd*)(((DWORD*)this)[50]);
-		DWORD cmd = ((DWORD)cmds +  seq % 90 * sizeof(CVerifiedUserCmd));
+		DWORD cmd = ((DWORD)cmds +  seq % 90 * (dismay->m_nCUserCmdSize + 4));
 		return (CVerifiedUserCmd*)cmd;
 	}
-	__forceinline void HSetUserCmd(int seq, CUserCmd* cmd)
+	inline void HSetUserCmd(int seq, CUserCmd* cmd)
 	{
 		CUserCmd* seqcmd = HGetUserCmd(seq);
 		seqcmd = cmd;
 		CVerifiedUserCmd* seqvcmd = HGetVUserCmd(seq);
 		seqvcmd->m_cmd = *cmd;
-		seqvcmd->m_crc = cmd->GetChecksum();
+		*seqvcmd->m_crc() = cmd->GetChecksum();
 	}
 };
 

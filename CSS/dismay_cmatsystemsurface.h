@@ -27,7 +27,7 @@ public:
 	virtual void* CMatSystemSurface::DrawSetColor(int,int,int,int) = 0;
 	virtual void* CMatSystemSurface::DrawSetColor(Color) = 0;
 	virtual void* CMatSystemSurface::DrawFilledRect(int,int,int,int) = 0;
-	virtual void* CMatSystemSurface::DrawFilledRectArray(vgui::IntRect *,int) = 0;
+	virtual void* CMatSystemSurface::DrawFilledRectArray(void*,int) = 0;
 	virtual void* CMatSystemSurface::DrawOutlinedRect(int,int,int,int) = 0;
 	virtual void* CMatSystemSurface::DrawLine(int,int,int,int) = 0;
 	virtual void* CMatSystemSurface::DrawPolyLine(int *,int *,int) = 0;

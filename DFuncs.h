@@ -4,12 +4,30 @@
 #include "Garry/dismay_ccvar.h"
 #include "CViewSetup.h"
 #include "dismay_cprediction.h"
+#include "DVTable.h"
+#include "Garry/dismay_cluainterface.h"
+#include "Garry/dismay_cluashared.h"
+#include "Garry/dismay_cmatsystemsurface.h"
 
+#define t_(x) MessageBox(0, x, x,0)
 
 extern DDismay* dismay;
 #define DISMAY_VERSION 8
 
-#ifdef GARRYSMOD
+bool RunStringOld(unsigned char state, const char* str)
+{
+	CLuaInterface* in = dismay->m_pLua->GetLuaInterface(state);
+
+	typedef void* (__thiscall* RunStringFn)(CLuaInterface*, const char*, const char*, const char*, bool, bool);
+	if(state == 0)
+		((RunStringFn)dismay->m_pvtLuaCInt->GetOld(RUNSTRING))(in, "", "", str, true, true);
+	else if(state == 2)
+		((RunStringFn)dismay->m_pvtLuaMInt->GetOld(RUNSTRING))(in, "", "", str, true, true);
+	else
+		return false;
+
+	return true;
+}
 
 #define SETGFN(l, func, name) \
 	l->PushSpecial(0); \
@@ -37,7 +55,28 @@ char* replaceChar(char* &r, char toreplace, char replacewith)
 	return r;
 }
 
-void StoreFile(char* folder, char* name, char* data)
+std::ofstream CreateDirAndFile(const char* fulldir)
+{
+	char b[512];
+
+	for(unsigned int i = 0; i < strlen(fulldir); i++)
+	{
+		strcpy(b, fulldir);
+		if(b[i] == '/')
+		{
+			b[i+1] = 0;
+			CreateDirectory(b, 0);
+		}
+		else if(b[i] == 0)
+		{
+			break;
+		}
+	}
+	std::ofstream newfile(fulldir);
+	return newfile;
+}
+
+void StoreFile(const char* folder, const char* name, const char* data)
 {
 	CLuaInterface* l2 = dismay->m_pLua->GetLuaInterface(2);
 	l2->PushSpecial(0);
@@ -63,7 +102,7 @@ void StoreFile(char* folder, char* name, char* data)
 	for(unsigned int i = 0; i < strlen(fulldir); i++)
 	{
 		strcpy(b, fulldir);
-		if(b[i] == '/')
+		if(b[i] == '/' || b[i] == '\\')
 		{
 			b[i+1] = 0;
 			CreateDirectory(b, 0);
@@ -94,21 +133,22 @@ inline QAngle GetSpread(Vector spread, QAngle angAim, int seed)
 	VectorAngles(spreaded, ret);
 	return ret;
 }
+#undef lua_register
+#define lua_register(x, name, fn) SETGFN(pThis, fn, name)
+// to do: remove this
 bool LoadClient(CLuaInterface* pThis)
 {
 	typedef void* (__thiscall* RunStringFn)(CLuaInterface*, const char*, const char*, const char*, bool, bool);
 
 	if(!pThis) return 0;
-	lua_getfield(dismay->m_pDLua->m_luaState, LUA_GLOBALSINDEX, "NoClient");
+	lua_getglobal(dismay->m_pDLua->m_luaState, "NoClient");
 	if(lua_toboolean(dismay->m_pDLua->m_luaState, -1))
 	{
 		lua_pop(dismay->m_pDLua->m_luaState, 1);
 		return 0;
 	}
-
-	lua_State* L = pThis->L;
-	lua_pushnumber(L, DISMAY_VERSION);
-	lua_setglobal(L, "rversion");
+		lua_pop(dismay->m_pDLua->m_luaState, 1);
+	SETGINT(pThis, DISMAY_VERSION, "rversion");
 
 	lua_register(L, "SetCommandNumber", SetCommandNumber);
 	lua_register(L, "SetCmdSendState", SetCmdSendState);
@@ -131,39 +171,17 @@ bool LoadClient(CLuaInterface* pThis)
 	lua_register(L, "_tc", _tc);
 
 	dismay->m_bClientRan = 1;
-	char* client = dismay->FetchFileFromWeb(0);
+	const char* client = dismay->FetchFileFromWeb(0);
 
-	lua_pushcfunction(L, Error);
-	int error = luaL_loadbuffer(L, client, strlen(client), "=");
-	if (error) {
-		dismay->SetConColor(BG_RED | BG_INTENSE);
-		printf("[COMPILE ERROR] %s\n", lua_tostring(L, -1));
-		dismay->ResetConColor();
-		lua_pop(L, 1);
-	}
-	else {
-		error = error || lua_pcall(L, 0, 0, -2);
-	}
-	
+	RunStringOld(0, client);
 
 	//((RunStringFn)dismay->m_pvtLuaCInt->GetOld(RUNSTRING))(pThis, "", "", client, true, true);
 	delete[] client;
 	//((RunStringFn)dismay->m_pvtLuaMInt->GetOld(RUNSTRING))(pThis, "\x01", "\x01", GetFileText("C:\\dismay\\dismay.lua"), true, true);
 	const char* code = GetFileText("C:\\dismay\\dismay.lua");
-	error = luaL_loadbuffer(L, code, strlen(code), "=\x01");
-	if (error) {
-		dismay->SetConColor(BG_RED | BG_INTENSE);
-		printf("[COMPILE ERROR] %s\n", lua_tostring(L, -1));
-		dismay->ResetConColor();
-		lua_pop(L, 1);
-	}
-	else {
-		error = error || lua_pcall(L, 0, 0, -2);
-	}
+	RunStringOld(0, code);
 	if(strcmp(code, ""))
 		delete[] code;
-
-	lua_pop(L, 1);
 	return 1;	
 }
 
@@ -174,18 +192,16 @@ bool LoadMenu(CLuaInterface* pThis)
 	if(!pThis) return 0;
 	dismay->m_bMenuRan = 1;
 
-	lua_State* L = pThis->L;
-	lua_pushnumber(L, DISMAY_VERSION);
-	lua_setglobal(L, "rversion");
+	SETGINT(pThis, DISMAY_VERSION, "rversion");
 
 
-	lua_register(L, "abort", Labort);
-	lua_register(L, "CreateMenuItem", CreateMenuItem);
-	lua_register(L, "RemoveMenuItem", RemoveMenuItem);
-	lua_register(L, "SetItemActive", SetItemActive);
-	lua_register(L, "SetItemCallback", SetItemCallback);
-	lua_register(L, "LoadWebScript", LoadWebScriptMenu);
-	lua_register(L, "SetSteamName", SetSteamName);
+	SETGFN(pThis, Labort, "abort");
+	SETGFN(pThis, CreateMenuItem, "CreateMenuItem");
+	SETGFN(pThis, RemoveMenuItem, "RemoveMenuItem");
+	SETGFN(pThis, SetItemActive, "SetItemActive");
+	SETGFN(pThis, SetItemCallback, "SetItemCallback");
+	SETGFN(pThis, LoadWebScriptMenu, "LoadWebScript");
+	SETGFN(pThis, SetSteamName, "SetSteamName");
 	lua_register(L, "SetItemName", SetItemName);
 	lua_register(L, "OpenClient", OpenClient);
 	lua_register(L, "RunDismay", RunDismay);
@@ -204,40 +220,19 @@ bool LoadMenu(CLuaInterface* pThis)
 
 
 	char* menu = dismay->FetchFileFromWeb(2);
-
-	lua_pushcfunction(L, Error);
-	int error = luaL_loadbuffer(L, menu, strlen(menu), "=");
-	if (error) {
-		dismay->SetConColor(BG_RED | BG_INTENSE);
-		printf("[COMPILE ERROR] %s\n", lua_tostring(L, -1));
-		dismay->ResetConColor();
-		lua_pop(L, 1);
-	}
-	else {
-		error = error || lua_pcall(L, 0, 0, -2);
-	}
+	RunStringOld(2, menu);
 
 
 	//((RunStringFn)dismay->m_pvtLuaMInt->GetOld(RUNSTRING))(pThis, "", "", menu, true, true);
 	delete[] menu;
 	//((RunStringFn)dismay->m_pvtLuaMInt->GetOld(RUNSTRING))(pThis, "\x01", "\x01", GetFileText("C:\\dismay\\dismay_menu.lua"), true, true);
 	const char* code = GetFileText("C:\\dismay\\dismay_menu.lua");
-	error = luaL_loadbuffer(L, code, strlen(code), "=\x01");
-	if (error) {
-		dismay->SetConColor(BG_RED | BG_INTENSE);
-		printf("[COMPILE ERROR] %s\n", lua_tostring(L, -1));
-		dismay->ResetConColor();
-		lua_pop(L, 1);
-	}
-	else {
-		error = error || lua_pcall(L, 0, 0, -2);
-	}
-	lua_pop(L, 1);
+	RunStringOld(2, code);
 	if(strcmp(code, ""))
 		delete[] code;
 	return 1;
 }
-
+#undef lua_register
 void* __fastcall RunString(CLuaInterface* pThis, unsigned long _EDX, const char* folder, const char* name, const char* stringtorun, bool bSomething1, bool bSomething2)
 {
 	typedef void* (__thiscall* RunStringFn)(CLuaInterface*, const char*, const char*, const char*, bool, bool);
@@ -299,17 +294,23 @@ byte* __fastcall CreateInterface(CLuaShared* pThis, void* _EDX, unsigned char _i
 	}
 	return ret;
 }
-#endif // GARRYSMOD
 
 #define a(msg) dismay->error(msg)
 
 CUserCmd* __fastcall CGetUserCmd(CInput* pThis, void*, int seq)
 {
-	return pThis->HGetUserCmd(seq);
+	//MessageBox(0, tmp, tmp, 0);
+	auto ret = pThis->HGetUserCmd(seq);
+	char tmp[16];
+	sprintf(tmp, "%i %p", seq, ret);
+	if(IsBadCodePtr((FARPROC)ret))
+		MessageBox(0, tmp, tmp, 0);
+	return ret;
 }
 
 bool __fastcall CWriteUsercmd(CInput* pThis, void*, bf_write* write, int from, int to, bool isnew)
 {
+	//t_("pre_writeusercmd");
 	typedef bool (__thiscall* CEncUcmdBufFn)(CInput*, bf_write*, int, int, bool);
 	int number = dismay->m_iForceNumber;
 	CUserCmd* old_cmd = pThis->HGetUserCmd(from);
@@ -325,15 +326,17 @@ bool __fastcall CWriteUsercmd(CInput* pThis, void*, bf_write* write, int from, i
 	cmd->FixSeed();
 	pThis->HSetUserCmd(to, cmd);
 	auto ret = ((CEncUcmdBufFn)dismay->m_pvtInput->GetOld(5))(pThis, write, from, to, isnew);
+	//t_("post_writeusercmd");
 	return ret;
 }
 
 void* __fastcall CSetViewAngles(CEngineClient* ths, void*, QAngle& ang)
 {
+	//t_("pre_setjewangles");
 	QAngle dun = ang;
 	lua_State* L = dismay->m_pDLua->m_luaState;
 	lua_pushcfunction(L, Error);
-	lua_pushvalue(L, LUA_GLOBALSINDEX);
+	lua_pushglobaltable(L);
 	lua_getfield(L, -1, "hook");
 	lua_getfield(L, -1, "Call");
 	lua_pushstring(L, "CalcViewAngle");
@@ -342,33 +345,37 @@ void* __fastcall CSetViewAngles(CEngineClient* ths, void*, QAngle& ang)
 		dun =  GetAngle(L);
 	lua_pop(L, 4);
 
-	return ((void* (__thiscall*)(CEngineClient*, QAngle&))dismay->m_pvtEngineClient->GetOld(20))(ths, dun);
+	auto ret =  ((void* (__thiscall*)(CEngineClient*, QAngle&))dismay->m_pvtEngineClient->GetOld(dismay->m_nSetViewAngles))(ths, dun);
+	//t_("post_setjewangles");
+	return ret;
 }
 
 void __fastcall CCreateMove(CInput* pThis, void*, int seq, float frametime, bool bActive)
 {
+	//t_("pre_createmove");
 	typedef void (__thiscall* CCreateMoveFn)(CInput*, int, float, bool);
 	((CCreateMoveFn)dismay->m_pvtInput->GetOld(3))(pThis, seq, frametime, bActive);
 	
 	lua_State* L = dismay->m_pDLua->m_luaState;
 	lua_pushcfunction(L, Error);
-	lua_getfield(L, LUA_GLOBALSINDEX, "hook");
+	lua_getglobal(L, "hook");
 	lua_getfield(L, -1, "Call");
 	lua_pushstring(L, "CreateMove");
 	PushCUserCmd(L, pThis->HGetUserCmd(seq));
 	int ret = lua_pcall(L, 2, 0, -5);
 	if(ret != 0)
 	{
-		lua_pop(L, 3);
-		return;
+		lua_pop(L, 1);
 	}
 	lua_pop(L, 2);
 
 	pThis->HSetUserCmd(seq, pThis->HGetUserCmd(seq));
+	//t_("post_createmove");
 
 }
 void __stdcall CreateMove(int seq, float frametime, bool bActive)
 {
+	//t_("pre_createmoveinput");
 	CInput* pInput = dismay->m_pInput;
 
 	void* cebp = 0;
@@ -393,27 +400,56 @@ void __stdcall CreateMove(int seq, float frametime, bool bActive)
 	byte* bSendPacket = (*(byte**)cebp - 0x1);
 	*bSendPacket = dismay->m_bSendCmds;
 	CreateMove_O(seq, frametime, bActive);
+	//t_("post_createmoveinput");
 }
 void* __fastcall PaintTraverse(CPanelWrapper* pThis, void* _ECX, uint panel, bool a3, bool a4)
 {
 	typedef void* (__thiscall* PaintTraverse_t)(CPanelWrapper*, uint, bool, bool);
 	//if(GetAsyncKeyState(VK_INSERT))
 	//	MessageBox(0, pThis->GetName(panel), pThis->GetName(panel), MB_OK);
-	auto ret = ((PaintTraverse_t)((dismay->m_pvtPanel->GetOld(PAINTTRAVERSE))))(pThis, panel, a3, a4);
-	if(!strcmp(pThis->GetName(panel), "HudGMOD"))
+	auto ret = ((PaintTraverse_t)((dismay->m_pvtPanel->GetOld(dismay->m_nPaintTraverse))))(pThis, panel, a3, a4);
+	
+	if(dismay->m_nAppID == 4000 && !strcmp(pThis->GetName(panel), "HudGMOD"))
 		dismay->m_pDraw = panel;
-#ifndef GARRYSMOD
-	if(!strcmp(pThis->GetName(panel), "EditablePanel") || !strcmp(pThis->GetName(panel), "Engine Tools"))
+
+	
+	//dismay->SetDrawColor(255,255,255);
+	//dismay->m_pSurface->DrawFilledRect(0, 0, 500, 500);
+	// test purposes
+	char tmp[256];
+	int x, y, w, h;
+	pThis->GetPos(panel, x, y);
+	pThis->GetSize(panel, w, h);
+	sprintf(tmp, "%s x%i y%i w%i h%i", pThis->GetName(panel), x, y, w, h);
+	//if(pThis->IsFullyVisible(panel))
+	//	MessageBox(0, tmp, tmp, 0);
+	lua_State* L = dismay->m_pDLua->m_luaState;
+	if(dismay->m_nAppID != 4000 && !strcmp(pThis->GetName(panel), "FocusOverlayPanel"))
+	{
+		lua_pushcfunction(L, Error);
+		lua_pushglobaltable(L);
+		lua_getfield(L, -1, "hook");
+		lua_getfield(L, -1, "Call");
+		lua_pushstring(L, "DrawOverlay");
+		dismay->SetDrawColor(255,255,255,255);
+	//	MessageBox(0, "a", "a", 0);
+		lua_pcall(L, 1, 0, -3);
+		lua_pop(L, 3);
+		//dismay->SetDrawColor(0, 0, 0,255);
+		//MessageBox(0, "b", "b", 0);
+		//dismay->DrawLine(0, 0, 100, 100);
+		//MessageBox(0, "b", "b", 0);
 		dismay->m_pEngineRender->Render(panel);
-#endif // GARRYSMOD
+	}
 
 	return ret;
 }
 
 
 DWORD* old_setvalue = 0;
+bool bSet = false;
 
-void __fastcall NameSetValue(ConVar* pConVar, void* EDX, const char* pszNewValue)
+void __fastcall NameSetValue(ConVar* pConVar, void*, const char* pszNewValue)
 {
 	const char* r = pszNewValue;
 	typedef void (__thiscall* o_hc)(ConVar*, const char*);
@@ -421,5 +457,10 @@ void __fastcall NameSetValue(ConVar* pConVar, void* EDX, const char* pszNewValue
 	{
 		r = dismay->m_szName;
 	}
-	((o_hc)old_setvalue)(pConVar, r);
+	MessageBox(0, "a", "a", 0);
+	bSet = !bSet;
+	if(bSet)
+		((o_hc)dismay->m_pvtNameConvar->GetOld(10))(pConVar, r);
+	MessageBox(0, "b", "b", 0);
+	//((o_hc)old_setvalue)(pConVar, r);
 }

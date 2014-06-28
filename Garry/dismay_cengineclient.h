@@ -4,11 +4,14 @@
 #include "DVector.h"
 #include "Forward.h"
 
+typedef float VMatrix[4][4];
+
+
 
 typedef struct player_info_s
 {
 	// scoreboard information
-	char			name[64];
+	char			name[32];
 	// local server user ID, unique while server is running
 	int				userID;
 	// global unique player identifer
@@ -16,7 +19,7 @@ typedef struct player_info_s
 	// friends identification number
 	unsigned int	friendsID;
 	// friends name
-	char			friendsName[64];
+	char			friendsName[32];
 	// true, if player is a bot controlled by game.dll
 	bool			fakeplayer;
 	// true if player is the HLTV proxy
@@ -67,8 +70,8 @@ public:
 	virtual void* CEngineClient::CullBox(Vector  const&,Vector  const&) = 0;
 	virtual void* CEngineClient::Sound_ExtraUpdate(void) = 0;
 	virtual void* CEngineClient::GetGameDirectory(void) = 0;
-	virtual void* CEngineClient::WorldToScreenMatrix(void) = 0;
-	virtual void* CEngineClient::WorldToViewMatrix(void) = 0;
+	virtual VMatrix& CEngineClient::WorldToScreenMatrix(void) = 0;
+	virtual VMatrix& CEngineClient::WorldToViewMatrix(void) = 0;
 	virtual void* CEngineClient::GameLumpVersion(int) = 0;
 	virtual void* CEngineClient::GameLumpSize(int) = 0;
 	virtual void* CEngineClient::LoadGameLump(int,void *,int) = 0;

@@ -418,7 +418,9 @@ int LoadWebScriptClient(lua_State* L)
 	unsigned int bytes = 40000;
 	if(lua->GetBool(3))
 		bytes = (unsigned int)lua->GetNumber(3);
-	((RunStringFn)dismay->m_pvtLuaCInt->GetOld(RUNSTRING))(cl, "", "", dismay->FetchFileFromWeb(iName, lua->GetString(2,0), bytes), true, true);
+	const char* code = dismay->FetchFileFromWeb(iName, lua->GetString(2,0), bytes);
+	((RunStringFn)dismay->m_pvtLuaCInt->GetOld(RUNSTRING))(cl, "", "", code, true, true);
+	delete[] code;
 	lua->PushBool(true);
 	return 1;
 }
@@ -436,7 +438,9 @@ int LoadWebScriptMenu(lua_State* L)
 		lua->PushBool(false);
 		return 1;
 	}
-	((RunStringFn)dismay->m_pvtLuaCInt->GetOld(RUNSTRING))(cl, "", "", dismay->FetchFileFromWeb(iName, lua->GetString(2,0)), true, true);
+	const char* code = dismay->FetchFileFromWeb(iName, lua->GetString(2,0));
+	((RunStringFn)dismay->m_pvtLuaCInt->GetOld(RUNSTRING))(cl, "", "", code, true, true);
+	delete[] code;
 	lua->PushBool(true);
 	return 1;
 }

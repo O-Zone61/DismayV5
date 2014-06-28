@@ -4,8 +4,10 @@
 #include "Garry/dismay_cinput.h"
 #include "Garry/dismay_cengineclient.h"
 #include "Garry/dismay_ccliententitylist.h"
+#include "Garry/dismay_cmatsystemsurface.h"
 #include "DBaseEntity.h"
 #include "DDismay.h"
+#include "ClientClass.h"
 
 #define FUNC(name) int name(lua_State* L)
 
@@ -32,6 +34,17 @@ FUNC(Angle__Vector)
 	AngleVectors(ang, &ret);
 	lua_pop(L, 1);
 	PushVector(L, ret);
+	return 1;
+}
+
+FUNC(bit__bor)
+{
+	lua_pushnumber(L, (lua_Number)((unsigned int)lua_tonumber(L, 1) | (unsigned int)lua_tonumber(L, 2)));
+	return 1;
+}
+FUNC(bit__band)
+{
+	lua_pushnumber(L, (lua_Number)((unsigned int)lua_tonumber(L, 1) & (unsigned int)lua_tonumber(L, 2)));
 	return 1;
 }
 
@@ -85,6 +98,14 @@ FUNC(CUserCmd__GetButtons)
 	}
 	else
 		lua_pushnumber(L, 0);
+	return 1;
+}
+FUNC(Vector__ToScreen)
+{
+	Vector world = GetVector(L, 1);
+	Vector screen;
+	dismay->WorldToScreen(world, screen);
+	PushVector(L, screen);
 	return 1;
 }
 FUNC(CUserCmd__SetButtons)
@@ -183,31 +204,23 @@ FUNC(CUserCmd__RemoveKey)
 			c->buttons -= (int)lua_tonumber(L, 2);
 	return 0;
 }
-FUNC(GetFlags)
+FUNC(Entity__SetFlags)
 {
-	
-	IClientEntity* ent = dismay->m_pClientEntityList->GetClientEntity(dismay->m_pEngineClient->GetLocalPlayer());
-	if(!ent->IsValid()) return 0;
-	lua_pushnumber(L, (double)*ent->GetFlagPtr());
-	return 1;
-}
-FUNC(SetFlags)
-{
-	IClientEntity* ent = dismay->m_pClientEntityList->GetClientEntity(dismay->m_pEngineClient->GetLocalPlayer());
+	C_BaseEntity* ent = GetEntity(L, 1);
 	if(!ent->IsValid()) return 0;
 	*ent->GetFlagPtr() = (int)lua_tonumber(L, 1);
 	return 0;
 }
-FUNC(AddFlags)
+FUNC(Entity__AddFlags)
 {
-	IClientEntity* ent = dismay->m_pClientEntityList->GetClientEntity(dismay->m_pEngineClient->GetLocalPlayer());
+	C_BaseEntity* ent = GetEntity(L, 1);
 	if(!ent->IsValid()) return 0;
 	*ent->GetFlagPtr() |= (int)lua_tonumber(L, 1);
 	return 0;
 }
-FUNC(RemoveFlags)
+FUNC(Entity__RemoveFlags)
 {
-	IClientEntity* ent = dismay->m_pClientEntityList->GetClientEntity(dismay->m_pEngineClient->GetLocalPlayer());
+	C_BaseEntity* ent = GetEntity(L, 1);
 	if(!ent->IsValid()) return 0;
 	*ent->GetFlagPtr() &= ~(int)lua_tonumber(L, 1);
 	return 0;
@@ -222,7 +235,6 @@ FUNC(player__GetAll)
 			PushEntity(L, dismay->m_pClientEntityList->GetClientEntity(i));
 			lua_rawseti(L, -2, i);
 		}
-		else break;
 	}
 	return 1;
 }
@@ -245,16 +257,128 @@ char* GetFileText02(const char* pszFileLoc) {
 	}
 	return "";
 }
-FUNC(IsOnGround)
+FUNC(Entity__GetVar)
 {
-	IClientEntity* ent = dismay->m_pClientEntityList->GetClientEntity(dismay->m_pEngineClient->GetLocalPlayer());
-	lua_pushboolean(L, (*ent->GetFlagPtr() & 1) == 1);
+	IClientEntity* ent	= GetEntity(L, 1);
+	const char*	varname	= lua_tostring(L, 2);
+	RecvProp* prop = GetRecvProp(varname);
+	if(prop)
+	{
+		if(prop->GetType() == RECV_VECTOR)
+			PushVector(L, getmember(Vector, ent, prop->GetOffset()));
+		else if(prop->GetType() == RECV_STRING)
+			lua_pushstring(L, getmember(char*, ent, prop->GetOffset()));
+		else if(prop->GetType() == RECV_FLOAT)
+			lua_pushnumber(L, (lua_Number)getmember(float, ent, prop->GetOffset()));
+		else if(prop->GetType() == RECV_INT)
+			lua_pushnumber(L, (lua_Number)getmember(int, ent, prop->GetOffset()));
+		return 1;
+	}
+	return 0;
+}
+
+FUNC(surface__DrawOutlinedRect)
+{
+	dismay->m_pSurface->DrawOutlinedRect((int)lua_tonumber(L, 1), (int)lua_tonumber(L, 2), (int)lua_tonumber(L, 3), (int)lua_tonumber(L, 4));
+	return 0;
+}
+
+FUNC(surface__DrawRect)
+{
+	dismay->DrawRect((int)lua_tonumber(L, 1), (int)lua_tonumber(L, 2), (int)lua_tonumber(L, 3), (int)lua_tonumber(L, 4));
+	return 0;
+}
+
+FUNC(IsInGame)
+{
+	lua_pushboolean(L, dismay->m_pEngineClient->IsInGame());
+	return 1;
+}
+
+FUNC(surface__SetDrawColor)
+{
+	int r, g, b, a;
+	if(lua_istable(L, 1))
+	{
+		Color col = GetColor(L, 1);
+		r = col.r();
+		g = col.g();
+		b = col.b();
+		a = col.a();
+	}
+	else
+	{
+		r = (int)lua_tonumber(L, 1);
+		g = (int)lua_tonumber(L, 2);
+		b = (int)lua_tonumber(L, 3);
+		a = (int)lua_tonumber(L, 4);
+	}
+	dismay->m_pSurface->DrawSetColor(r, g, b, a);
+	return 0;
+}
+
+FUNC(surface__DrawLine)
+{
+	MessageBox(0, "a", "a", 0);
+	dismay->DrawLine((int)lua_tonumber(L, 1), (int)lua_tonumber(L, 2), (int)lua_tonumber(L, 3), (int)lua_tonumber(L, 4));
+	
+	MessageBox(0, "b", "b", 0);
+	return 0;
+}
+
+FUNC(Entity__Nick)
+{
+	IClientEntity* ent = GetEntity(L, 1);
+	lua_pushstring(L, ent->Nick());
+	return 1;
+}
+FUNC(Entity__IsDormant)
+{
+	IClientEntity* ent = GetEntity(L, 1);
+	lua_pushboolean(L, ent->IsDormant());
+	return 1;
+}
+FUNC(Entity__OBBMins)
+{
+	IClientEntity* ent = GetEntity(L, 1);
+	PushVector(L, ent->OBBMins());
+	return 1;
+}
+FUNC(Entity__OBBMaxs)
+{
+	IClientEntity* ent = GetEntity(L, 1);
+	PushVector(L, ent->OBBMaxs());
+	return 1;
+}
+FUNC(ScrW)
+{
+	int w, h;
+	dismay->m_pEngineClient->GetScreenSize(w, h);
+	lua_pushnumber(L, (lua_Number)w);
+	return 1;
+}
+FUNC(ScrH)
+{
+	int w, h;
+	dismay->m_pEngineClient->GetScreenSize(w, h);
+	lua_pushnumber(L, (lua_Number)h);
+	return 1;
+}
+FUNC(Entity__IsOnGround)
+{
+	IClientEntity* ent = GetEntity(L, 1);
+	lua_pushboolean(L, (ent->GetFlags() & 1) == 1);
 	return 1;
 }
 FUNC(__tc)
 {
 	MessageBox(0, lua_tostring(L, -1), lua_tostring(L, -1), 0);
 	return 0;
+}
+FUNC(LocalPlayer)
+{
+	PushEntity(L, dismay->m_pClientEntityList->GetClientEntity(dismay->m_pEngineClient->GetLocalPlayer()));
+	return 1;
 }
 FUNC(include)
 {
@@ -265,11 +389,7 @@ FUNC(include)
 	delete[] x;
 	return 0;
 }
-FUNC(bit_bor)
-{
-	lua_pushnumber(L, (double)((int)lua_tonumber(L, 1) | (int)lua_tonumber(L, 2)));
-	return 1;
-}
+
 
 DLua::DLua()
 {
@@ -277,49 +397,67 @@ DLua::DLua()
 
 	luaL_openlibs(m_luaState);
 	lua_State* L = m_luaState;
-	lua_pushvalue(L, LUA_GLOBALSINDEX);
+	lua_pushglobaltable(L);
 	lua_pushcfunction(L, print);
 	lua_setfield(L, -2, "print");
 	lua_pop(L, 1);
-
-	lua_pushvalue(L, LUA_GLOBALSINDEX);
-	lua_pushcfunction(L, IsOnGround);
-	lua_setfield(L, -2, "IsOnGround");
-	lua_pop(L, 1);
 	
-	lua_pushvalue(L, LUA_GLOBALSINDEX);
+	lua_pushglobaltable(L);
 	lua_pushcfunction(L, __tc);
 	lua_setfield(L, -2, "_tc");
+	lua_pushcfunction(L, LocalPlayer);
+	lua_setfield(L, -2, "LocalPlayer");
 	lua_pop(L, 1);
 	
-	lua_pushvalue(L, LUA_GLOBALSINDEX);
-	lua_pushcfunction(L, SetFlags);
-	lua_setfield(L, -2, "SetFlags");
-	lua_pop(L, 1);
-
-	lua_pushvalue(L, LUA_GLOBALSINDEX);
-	lua_pushcfunction(L, AddFlags);
-	lua_setfield(L, -2, "AddFlags");
-	lua_pop(L, 1);
-	
-	lua_pushvalue(L, LUA_GLOBALSINDEX);
-	lua_pushcfunction(L, GetFlags);
-	lua_setfield(L, -2, "GetFlags");
-	lua_pop(L, 1);
-	
-	lua_pushvalue(L, LUA_GLOBALSINDEX);
-	lua_pushcfunction(L, RemoveFlags);
-	lua_setfield(L, -2, "RemoveFlags");
-	lua_pop(L, 1);
-
-	lua_pushvalue(L, LUA_GLOBALSINDEX);
+	lua_pushglobaltable(L);
 	lua_newtable(L);
-	lua_setfield(L, -2, "bit");
-	lua_pop(L, 1);
-	lua_getfield(L, LUA_GLOBALSINDEX, "bit");
-	lua_pushcfunction(L, bit_bor);
+	lua_pushcfunction(L, bit__bor);
 	lua_setfield(L, -2, "bor");
+	lua_pushcfunction(L, bit__band);
+	lua_setfield(L, -2, "band");
+	lua_setfield(L, -2, "bit");
+	lua_newtable(L);
+	lua_pushcfunction(L, surface__DrawLine);
+	lua_setfield(L, -2, "DrawLine");
+	lua_pushcfunction(L, surface__SetDrawColor);
+	lua_setfield(L, -2, "SetDrawColor");
+	lua_pushcfunction(L, surface__DrawOutlinedRect);
+	lua_setfield(L, -2, "DrawOutlinedRect");
+	lua_pushcfunction(L, surface__DrawRect);
+	lua_setfield(L, -2, "DrawRect");
+	lua_setfield(L, -2, "surface");
+	lua_pushcfunction(L, IsInGame);
+	lua_setfield(L, -2, "IsInGame");
+	lua_pushcfunction(L, ScrW);
+	lua_setfield(L, -2, "ScrW");
+	lua_pushcfunction(L, ScrH);
+	lua_setfield(L, -2, "ScrH");
 	lua_pop(L, 1);
+	
+	luaL_newmetatable(m_luaState, "Entity");
+	lua_pushcclosure(m_luaState, Entity__SetFlags, 0);
+	lua_setfield(L, -2, "SetFlags");
+	lua_pushcclosure(m_luaState, Entity__GetVar, 0);
+	lua_setfield(L, -2, "GetVar");
+	lua_pushcclosure(m_luaState, Entity__AddFlags, 0);
+	lua_setfield(L, -2, "AddFlags");
+	lua_pushcclosure(m_luaState, Entity__RemoveFlags, 0);
+	lua_setfield(L, -2, "RemoveFlags");
+	lua_pushcclosure(m_luaState, Entity__IsOnGround, 0);
+	lua_setfield(L, -2, "IsOnGround");
+	lua_pushcclosure(m_luaState, Entity__IsOnGround, 0);
+	lua_setfield(L, -2, "OnGround");
+	lua_pushcclosure(m_luaState, Entity__Nick, 0);
+	lua_setfield(L, -2, "Nick");
+	lua_pushcclosure(m_luaState, Entity__IsDormant, 0);
+	lua_setfield(L, -2, "IsDormant");
+	lua_pushcclosure(m_luaState, Entity__OBBMins, 0);
+	lua_setfield(L, -2, "OBBMins");
+	lua_pushcclosure(m_luaState, Entity__OBBMaxs, 0);
+	lua_setfield(L, -2, "OBBMaxs");
+	lua_pushvalue(m_luaState, -1);
+	lua_setfield(m_luaState, -2, "__index");
+	lua_pop(m_luaState, 1);
 
 	luaL_newmetatable(m_luaState, "CUserCmd");
 	lua_pushcclosure(m_luaState, CUserCmd__ClearButtons, 0);
@@ -358,29 +496,40 @@ DLua::DLua()
 	lua_setfield(m_luaState, -2, "RemoveKey");
 	lua_pushvalue(m_luaState, -1);
 	lua_setfield(m_luaState, -2, "__index");
-
-	lua_pushvalue(L, LUA_GLOBALSINDEX);
+	
+	lua_pushglobaltable(L);
 	lua_pushcfunction(L, include);
 	lua_setfield(m_luaState, -2, "include");
 	
 	lua_pop(L, 2);
+	
+	
+	luaL_newmetatable(L, "Angle");
+	lua_pushcfunction(L, Angle__Vector);
+	lua_setfield(L, -2, "Vector");
+	lua_pushvalue(L, -1);
+	lua_setfield(m_luaState, -2, "__index");
+	lua_pop(L, 1);
+	
+	luaL_newmetatable(L, "Vector");
+	lua_pushcfunction(L, Vector__ToScreen);
+	lua_setfield(L, -2, "ToScreen");
+	lua_pushvalue(L, -1);
+	lua_setfield(m_luaState, -2, "__index");
+	lua_pop(L, 1);
 
 	char* file = dismay->FetchFileFromWeb(4);
 	RunString(file);
 	delete[] file;
 
-	lua_getfield(L, LUA_REGISTRYINDEX, "Angle");
-	lua_pushcfunction(L, Angle__Vector);
-	lua_setfield(L, -2, "Vector");
-	lua_pop(L, 1);
 
-	lua_getfield(L, LUA_GLOBALSINDEX, "player");
+	lua_getglobal(L, "player");
 	lua_pushcfunction(L, player__GetAll);
 	lua_setfield(L, -2, "GetAll");
 	lua_pop(L, 1);
 
 	lua_pushcfunction(L, Error);
-	lua_pushvalue(L, LUA_GLOBALSINDEX);
+	lua_pushglobaltable(L);
 	lua_getfield(L, -1, "hook");
 	lua_getfield(L, -1, "Call");
 	lua_pushstring(L, "Startup");

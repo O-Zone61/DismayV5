@@ -320,33 +320,35 @@ bool DDismay::DrawColoredText(ulong font,int x,int y,int r,int g,int b,int a,cha
 	return true;
 }
 
+HHOOK _hook;
+
+
 LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam)
 {
     if (nCode >= 0)
     {
-        if (wParam == WM_KEYDOWN)
+        if (wParam == WM_CHAR)
         {
 			KBDLLHOOKSTRUCT kbdStruct;
             kbdStruct = *((KBDLLHOOKSTRUCT*)lParam);
-            // a key (non-system) is pressed.
-            if (kbdStruct.vkCode == VK_F1)
-            {
-
-            }
         }
+		else if(wParam == WM_KEYDOWN)
+		{
+		}
     }
-
-    // call the next hook in the hook chain. This is nessecary or your hook chain will break and the hook stops
-    return 0;
-	//return CallNextHookEx(_hook, nCode, wParam, lParam);
+    return CallNextHookEx(_hook, nCode, wParam, lParam);
 }
 
 bool DDismay::HookWindows()
 {
+    if (!(_hook = SetWindowsHookEx(WH_KEYBOARD_LL, HookCallback, NULL, 0)))
+		return false;
+	return true;
 }
 
 bool DDismay::UnhookWindows()
 {
+    UnhookWindowsHookEx(_hook);
 }
 
 bool DDismay::main(void)

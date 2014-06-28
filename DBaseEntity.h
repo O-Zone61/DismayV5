@@ -32,6 +32,8 @@ class C_BaseCollideable
 {
 public:
 	virtual void construct() = 0;
+	virtual const Vector& OBBMinsPreScaled() = 0; 
+	virtual const Vector& OBBMaxsPreScaled() = 0; 
 	virtual const Vector& OBBMins() const = 0;
 	virtual const Vector& OBBMaxs() const = 0;
 };
@@ -39,7 +41,6 @@ public:
 class C_BaseEntity
 {
 public:
-	virtual void construct() = 0;
 	virtual void destruct() = 0;
 	virtual void SetRefEHandle(CBaseHandle&) = 0;
 	virtual CBaseHandle& GetRefEHandle() = 0;

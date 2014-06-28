@@ -119,6 +119,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DBaseEntity.cpp" />
+    <ClCompile Include="DConsole.cpp" />
     <ClCompile Include="DDismay.cpp" />
     <ClCompile Include="DEngineRender.cpp" />
     <ClCompile Include="dismay_main.cpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="DCommand.h" />
     <ClInclude Include="DBaseEntity.h" />
     <ClInclude Include="DColor.h" />
+    <ClInclude Include="DConsole.h" />
     <ClInclude Include="DDismay.h" />
     <ClInclude Include="DEngineRender.h" />
     <ClInclude Include="DFuncs.h" />

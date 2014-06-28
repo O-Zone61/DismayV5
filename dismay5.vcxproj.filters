@@ -54,6 +54,9 @@
     <ClCompile Include="DBaseEntity.cpp">
       <Filter>Source Files\MyClasses</Filter>
     </ClCompile>
+    <ClCompile Include="DConsole.cpp">
+      <Filter>Source Files\MyClasses</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DDismay.h">
@@ -190,6 +193,9 @@
     </ClInclude>
     <ClInclude Include="ClientClass.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DConsole.h">
+      <Filter>Header Files\MyClasses</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

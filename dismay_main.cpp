@@ -1,3 +1,11 @@
+#pragma comment(lib, "lib/lua52.lib")
+#pragma comment(lib, "vstdlib.lib")
+#pragma comment(lib, "tier1.lib")
+#pragma comment(lib, "mathlib.lib")
+#pragma comment(lib, "IPHLPAPI.lib")
+#pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "Steam.lib")
+
 #include <Windows.h>
 #include <iostream>
 #include "DDismay.h"
